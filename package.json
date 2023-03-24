@@ -11,6 +11,8 @@
   "dependencies": {
     "@dnd-kit/core": "^6.0.8",
     "@dnd-kit/sortable": "^7.0.2",
+    "@react-spring/types": "^9.7.1",
+    "@react-spring/web": "^9.7.1",
     "@styled-jsx/plugin-sass": "^4.0.2",
     "@types/dompurify": "^3.0.0",
     "@types/node": "^18.14.2",
@@ -30,6 +32,6 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "sass": "^1.58.3",
-    "typescript": "^4.9.5"
+    "typescript": "^5.0.2"
   }
 }
