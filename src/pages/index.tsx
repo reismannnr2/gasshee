@@ -1,4 +1,3 @@
-import AnimateHeightTest from '../components/animation/animate-height-test';
 import BaseLayout from '../components/base-layout';
 import NoSSR from '../components/no-ssr';
 import SkillModificationTable from '../systems/gcr/skill-modification-table';
@@ -15,11 +14,6 @@ export default function Home() {
       <section>
         <NoSSR>
           <SkillModificationTable />
-        </NoSSR>
-      </section>
-      <section>
-        <NoSSR>
-          <AnimateHeightTest />
         </NoSSR>
       </section>
       <section>Hoge</section>

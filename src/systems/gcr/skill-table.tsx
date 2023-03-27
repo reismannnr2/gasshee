@@ -1,9 +1,13 @@
 import classNames from 'classnames';
 import { nanoid } from 'nanoid';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { rangeArray } from '../../commons/range-util';
+import { typedEntries } from '../../commons/object-utils';
+import AnimateHeight from '../../components/animation/animate-height';
 
 const stats = ['str', 'ref', 'dex', 'int', 'mnd', 'sym'] as const;
+
+type Stat = (typeof stats)[number];
 
 interface Skill {
   id: string;
@@ -13,43 +17,62 @@ interface Skill {
 }
 
 type SkillSet = {
-  [k in (typeof stats)[number]]: Skill[];
+  [k in Stat]: Skill[];
 };
 
+const fixed = { id: nanoid(), name: 'name', level: 2, fixed: true };
+const notFixed = { id: nanoid(), name: '', level: 2, fixed: false };
+
+const mock: Skill[] = [fixed, fixed, fixed, notFixed];
+const cloneBase = () => mock.map((s) => ({ ...s, id: nanoid() }));
+const mockSet = {
+  str: cloneBase(),
+  ref: cloneBase(),
+  dex: cloneBase(),
+  int: cloneBase(),
+  mnd: cloneBase(),
+  sym: cloneBase(),
+} as const;
+
 export default function SkillTable() {
-  const [skillSet, setSkillSet] = useState<SkillSet>({ str: [], ref: [], dex: [], int: [], mnd: [], sym: [] });
+  const [skillSet, setSkillSet] = useState<SkillSet>(mockSet);
+  const onColumnChange = useCallback(
+    (callback: (prev: Skill[]) => Skill[], stat: Stat) => {
+      setSkillSet((prev) => {
+        const skills = callback(prev[stat]);
+        return prev[stat] === skills ? prev : { ...prev, [stat]: skills };
+      });
+      return;
+    },
+    [setSkillSet],
+  );
   return (
-    <table>
-      <tbody>
-        {Object.entries(skillSet).map(([stat, skills]) => (
-          <Column
-            key={stat}
-            stat={stat}
-            skills={skills}
-            onChange={() => {
-              return;
-            }}
-          />
-        ))}
-      </tbody>
-      <style jsx>{`
-        table {
-          writing-mode: vertical-lr;
-          table-layout: fixed;
-          width: 100%;
+    <AnimateHeight deps={skillSet}>
+      <table>
+        <tbody>
+          {typedEntries(skillSet).map(([stat, skills]) => (
+            <Column key={stat} stat={stat} skills={skills} onChange={onColumnChange} />
+          ))}
+        </tbody>
+        <style jsx>{`
+          table {
+            writing-mode: vertical-lr;
+            table-layout: fixed;
+            width: 100%;
 
-          border-collapse: collapse;
-          border: 1px dotted #666;
-          font-size: 0.75rem;
-
-          & :global(td),
-          & :global(th) {
-            writing-mode: horizontal-tb;
+            border-collapse: collapse;
             border: 1px dotted #666;
+            font-size: 0.75rem;
+
+            & :global(td),
+            & :global(th) {
+              writing-mode: horizontal-tb;
+              border: 1px dotted #666;
+            }
           }
-        }
-      `}</style>
-    </table>
+        `}</style>
+      </table>
+    </AnimateHeight>
   );
 }
 
@@ -58,27 +81,40 @@ function Column({
   skills,
   onChange,
 }: {
-  stat: string;
+  stat: Stat;
   skills: Skill[];
-  onChange: (skills: readonly Skill[]) => void;
+  onChange: (callback: (prev: Skill[]) => Skill[], stat: Stat) => void;
 }) {
+  const onRowChange = useCallback(
+    (callback: (prev: Skill) => Skill, index: number) => {
+      onChange((prev: Skill[]) => {
+        const prevItem = prev[index];
+        if (!prevItem) {
+          return prev;
+        }
+        const nextItem = callback(prevItem);
+        if (nextItem === prevItem) {
+          return prev;
+        }
+        const next = prev.slice();
+        next[index] = nextItem;
+        return next;
+      }, stat);
+    },
+    [onChange, stat],
+  );
   return (
     <tr>
       <th>{stat}</th>
-      {skills.map((skill, idx) => (
-        <Row
-          key={skill.id}
-          skill={skill}
-          onChange={() => {
-            return;
-          }}
-        />
+      {skills.map((skill, index) => (
+        <Row key={skill.id} skill={skill} index={index} onChange={onRowChange} />
       ))}
       <td>
         <div className="button-container">
           <button
             type="button"
             onClick={() => {
+              onChange((prev) => prev.concat({ ...notFixed, id: nanoid() }), stat);
               return;
             }}
           >
@@ -87,6 +123,13 @@ function Column({
           <button
             type="button"
             onClick={() => {
+              onChange((prev) => {
+                const last = prev.at(-1);
+                if (!last || last.fixed) {
+                  return prev;
+                }
+                return prev.slice(0, -1);
+              }, stat);
               return;
             }}
           >
@@ -95,6 +138,9 @@ function Column({
         </div>
       </td>
       <style jsx>{`
+        th {
+          cursor: default;
+        }
         .button-container {
           display: grid;
           grid-template-columns: 1fr 1fr;
@@ -112,16 +158,27 @@ function Column({
   );
 }
 
-function Row({ skill, onChange }: { skill: Skill; onChange: (skill: Skill) => void }) {
+function Row({
+  skill,
+  index,
+  onChange,
+}: {
+  skill: Skill;
+  index: number;
+  onChange: (callback: (prev: Skill) => Skill, index: number) => void;
+}) {
   return (
     <td>
       <div>
         <input
           value={skill.name}
           readOnly={skill.fixed}
-          onChange={(e) => onChange({ ...skill, name: e.target.value })}
+          onChange={(e) => {
+            onChange((skill) => ({ ...skill, name: e.target.value }), index);
+            return;
+          }}
         />
-        <LevelSelect level={skill.level} onChange={(level) => onChange({ ...skill, level })} />
+        <LevelSelect level={skill.level} onChange={(level) => onChange((skill) => ({ ...skill, level }), index)} />
       </div>
       <style jsx>{`
         div {
@@ -131,6 +188,10 @@ function Row({ skill, onChange }: { skill: Skill; onChange: (skill: Skill) => vo
           input {
             border-right: 1px dotted #666;
             text-align: center;
+
+            &:read-only {
+              cursor: default;
+            }
           }
         }
       `}</style>
@@ -145,7 +206,7 @@ function LevelSelect({ level, onChange }: { level: number; onChange: (level: num
         const selected = level === v + 1;
         return (
           <li key={v} className={classNames({ selected })}>
-            <button type="button" onClick={() => onChange(v + 1)}>
+            <button type="button" onClick={() => onChange(v + 1)} disabled={selected}>
               {v + 1}
             </button>
           </li>
