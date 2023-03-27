@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 import { nanoid } from 'nanoid';
 import SortableListTable, { Render } from '../../components/sortable/sortable-list-table';
 import { createListOnChange } from '../../commons/input-util';
+import AnimateHeight from '../../components/animation/animate-height';
 
 interface SkillModification {
   id: string;
@@ -71,7 +72,7 @@ export default function SkillModificationTable() {
     [setItems],
   );
   return (
-    <div className="container">
+    <AnimateHeight deps={items}>
       <div className="button-container">
         <button
           type="button"
@@ -85,7 +86,7 @@ export default function SkillModificationTable() {
           -
         </button>
       </div>
-      <SortableListTable items={items} setter={setItems} render={render} rowSize={1.25} />
+      <SortableListTable items={items} setter={setItems} render={render} />
       <style jsx>{`
         .button-container {
           display: grid;
@@ -103,6 +104,6 @@ export default function SkillModificationTable() {
           }
         }
       `}</style>
-    </div>
+    </AnimateHeight>
   );
 }
