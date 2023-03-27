@@ -1,9 +1,10 @@
-import { Dispatch, SetStateAction } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import classNames from 'classnames';
-import VerticallySortable, { useOnDragEnd } from './vertically-sortable';
+import { Dispatch, SetStateAction } from 'react';
+import { genericMemo } from '../../commons/react-util';
 import DragHandle from './drag-handle';
+import VerticallySortable, { useOnDragEnd } from './vertically-sortable';
 
 export interface Props<T extends { id: string }> {
   items: T[];
@@ -43,7 +44,7 @@ interface RowProps<T extends { id: string }> {
   render: Render<T>;
 }
 
-function Row<T extends { id: string }>({ item, index, render }: RowProps<T>) {
+const Row = genericMemo(function Row<T extends { id: string }>({ item, index, render }: RowProps<T>) {
   const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } =
     useSortable(item);
   const style = {
@@ -70,4 +71,4 @@ function Row<T extends { id: string }>({ item, index, render }: RowProps<T>) {
       `}</style>
     </li>
   );
-}
+});

@@ -1,8 +1,8 @@
-import { useCallback, useState } from 'react';
 import { nanoid } from 'nanoid';
-import SortableListTable, { Render } from '../../components/sortable/sortable-list-table';
+import { useCallback, useState } from 'react';
 import { createListOnChange } from '../../commons/input-util';
 import AnimateHeight from '../../components/animation/animate-height';
+import SortableListTable, { Render } from '../../components/sortable/sortable-list-table';
 
 interface SkillModification {
   id: string;

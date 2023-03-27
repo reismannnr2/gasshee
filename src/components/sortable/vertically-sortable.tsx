@@ -1,19 +1,19 @@
-import React, { Dispatch, SetStateAction, useCallback } from 'react';
 import {
-  DndContext,
   closestCenter,
+  DndContext,
+  DragEndEvent,
   KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
-  DragEndEvent,
 } from '@dnd-kit/core';
 import {
+  arrayMove,
   SortableContext,
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
-  arrayMove,
 } from '@dnd-kit/sortable';
+import React, { Dispatch, SetStateAction, useCallback } from 'react';
 
 export interface Props<T extends { id: string }> {
   items: string[] | T[];

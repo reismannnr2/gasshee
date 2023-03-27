@@ -1,8 +1,8 @@
 import classNames from 'classnames';
 import { nanoid } from 'nanoid';
-import { useCallback, useState } from 'react';
-import { rangeArray } from '../../commons/range-util';
+import { memo, useCallback, useState } from 'react';
 import { typedEntries } from '../../commons/object-utils';
+import { rangeArray } from '../../commons/range-util';
 import AnimateHeight from '../../components/animation/animate-height';
 
 const stats = ['str', 'ref', 'dex', 'int', 'mnd', 'sym'] as const;
@@ -76,15 +76,13 @@ export default function SkillTable() {
   );
 }
 
-function Column({
-  stat,
-  skills,
-  onChange,
-}: {
+interface ColumnProps {
   stat: Stat;
   skills: Skill[];
   onChange: (callback: (prev: Skill[]) => Skill[], stat: Stat) => void;
-}) {
+}
+
+const Column = memo(function Column({ stat, skills, onChange }: ColumnProps) {
   const onRowChange = useCallback(
     (callback: (prev: Skill) => Skill, index: number) => {
       onChange((prev: Skill[]) => {
@@ -156,17 +154,19 @@ function Column({
       `}</style>
     </tr>
   );
-}
+});
 
-function Row({
-  skill,
-  index,
-  onChange,
-}: {
+interface RowProps {
   skill: Skill;
   index: number;
   onChange: (callback: (prev: Skill) => Skill, index: number) => void;
-}) {
+}
+
+const Row = memo(function Row({ skill, index, onChange }: RowProps) {
+  const onLevelChange = useCallback(
+    (level: number) => onChange((skill) => ({ ...skill, level }), index),
+    [onChange, index],
+  );
   return (
     <td>
       <div>
@@ -178,7 +178,7 @@ function Row({
             return;
           }}
         />
-        <LevelSelect level={skill.level} onChange={(level) => onChange((skill) => ({ ...skill, level }), index)} />
+        <LevelSelect level={skill.level} onChange={onLevelChange} />
       </div>
       <style jsx>{`
         div {
@@ -197,9 +197,14 @@ function Row({
       `}</style>
     </td>
   );
+});
+
+interface LevelSelectProps {
+  level: number;
+  onChange: (level: number) => void;
 }
 
-function LevelSelect({ level, onChange }: { level: number; onChange: (level: number) => void }) {
+const LevelSelect = memo(function LevelSelect({ level, onChange }: LevelSelectProps) {
   return (
     <ol>
       {rangeArray(6).map((v) => {
@@ -239,4 +244,4 @@ function LevelSelect({ level, onChange }: { level: number; onChange: (level: num
       `}</style>
     </ol>
   );
-}
+});

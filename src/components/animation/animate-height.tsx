@@ -1,6 +1,6 @@
-import React, { useRef, useEffect, useState } from 'react';
 import classNames from 'classnames';
 import { nanoid } from 'nanoid';
+import React, { useEffect, useRef, useState } from 'react';
 
 export interface Props {
   children?: React.ReactNode;

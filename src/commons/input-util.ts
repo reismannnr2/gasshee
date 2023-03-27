@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, ChangeEvent } from 'react';
+import { ChangeEvent, Dispatch, SetStateAction } from 'react';
 
 export function createListOnChange<T, K extends keyof T>(
   setter: Dispatch<SetStateAction<T[]>>,
