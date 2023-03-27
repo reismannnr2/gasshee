@@ -61,9 +61,6 @@ export default function SkillModificationTable() {
                   text-align: left;
                 }
               }
-              & :global(.drag-handle) {
-                font-size: 0.75rem;
-              }
             }
           `}</style>
         </div>
@@ -86,7 +83,9 @@ export default function SkillModificationTable() {
           -
         </button>
       </div>
-      <SortableListTable items={items} setter={setItems} render={render} />
+      <div className="list-container">
+        <SortableListTable items={items} setter={setItems} render={render} />
+      </div>
       <style jsx>{`
         .button-container {
           display: grid;
@@ -102,6 +101,9 @@ export default function SkillModificationTable() {
               background-color: #ddd;
             }
           }
+        }
+        .list-container :global(.drag-handle) {
+          font-size: 0.75rem;
         }
       `}</style>
     </AnimateHeight>

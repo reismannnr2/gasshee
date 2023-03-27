@@ -1,6 +1,6 @@
 import classNames from 'classnames';
-import { nanoid } from 'nanoid';
 import React, { useEffect, useRef, useState } from 'react';
+import { useRerender } from '../../commons/hook-util';
 
 export interface Props {
   children?: React.ReactNode;
@@ -10,7 +10,7 @@ export default function AnimateHeight({ children, deps }: Props) {
   const height = useRef(0);
   const ref = useRef<HTMLDivElement>(null);
   const [rendered, setRendered] = useState(false);
-  const [, setRerender] = useState('');
+  const rerender = useRerender();
   useEffect(() => {
     const div = ref.current;
     if (!div) {
@@ -27,9 +27,9 @@ export default function AnimateHeight({ children, deps }: Props) {
     const next = div.getBoundingClientRect().height;
     if (height.current !== next) {
       height.current = next;
-      setRerender(nanoid());
+      rerender();
     }
-  }, [deps, rendered]);
+  }, [deps, rendered, rerender]);
   return (
     <div className={classNames({ rendered }, 'wrapper')}>
       <div ref={ref}>{children}</div>
