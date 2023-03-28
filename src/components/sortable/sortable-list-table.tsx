@@ -12,8 +12,12 @@ export interface Props<T extends { id: string }> {
   render: Render<T>;
 }
 
+export interface RenderOption {
+  isDragging?: boolean;
+}
+
 export interface Render<T extends { id: string }> {
-  (item: T, index: number): React.ReactNode;
+  (item: T, index: number, option: RenderOption): React.ReactNode;
 }
 
 export default function SortableListTable<T extends { id: string }>({ items, setter, render }: Props<T>) {
@@ -53,7 +57,7 @@ const Row = genericMemo(function Row<T extends { id: string }>({ item, index, re
   };
   return (
     <li ref={setNodeRef} className={classNames({ dragging: isDragging })} style={style}>
-      {render(item, index)}
+      {render(item, index, { isDragging })}
       <DragHandle ref={setActivatorNodeRef} {...attributes} {...listeners} />
       <style jsx>{`
         li {

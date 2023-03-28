@@ -1,5 +1,6 @@
 import BaseLayout from '../components/base-layout';
 import NoSSR from '../components/no-ssr';
+import AbilityTable from '../systems/gcr/ability-table';
 import SkillModificationTable from '../systems/gcr/skill-modification-table';
 import SkillTable from '../systems/gcr/skill-table';
 
@@ -14,6 +15,11 @@ export default function Home() {
       <section>
         <NoSSR>
           <SkillModificationTable />
+        </NoSSR>
+      </section>
+      <section>
+        <NoSSR>
+          <AbilityTable />
         </NoSSR>
       </section>
       <section>Hoge</section>

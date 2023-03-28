@@ -41,6 +41,9 @@ export default function AnimateHeight({ children, deps }: Props) {
           &.rendered {
             overflow: hidden;
             transition: height 0.2s ease;
+            &:has(.dragging) {
+              overflow: visible;
+            }
           }
         }
       `}</style>

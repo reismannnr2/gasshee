@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import { useCallback, useState } from 'react';
+import { Dispatch, SetStateAction, useCallback, useState } from 'react';
 import { createListOnChange } from '../../commons/input-util';
 import AnimateHeight from '../../components/animation/animate-height';
 import SortableListTable, { Render } from '../../components/sortable/sortable-list-table';
@@ -22,52 +22,7 @@ const mock: SkillModification[] = [
 
 export default function SkillModificationTable() {
   const [items, setItems] = useState(mock);
-  const render: Render<SkillModification> = useCallback(
-    (item, index) => {
-      return (
-        <div>
-          <input type="text" value={item.skill} onChange={createListOnChange(setItems, index, 'skill', (v) => v)} />
-          <input type="text" value={item.base} onChange={createListOnChange(setItems, index, 'base', (v) => v)} />
-          <input
-            type="text"
-            value={item.dice}
-            onChange={createListOnChange(setItems, index, 'dice', (v) => Number(v))}
-          />
-          <input
-            type="text"
-            value={item.fixed}
-            onChange={createListOnChange(setItems, index, 'fixed', (v) => Number(v))}
-          />
-          <input type="text" value={`${2 + item.dice}D+${7 + item.fixed}`} readOnly />
-          <input
-            className="long"
-            type="text"
-            value={item.text}
-            onChange={createListOnChange(setItems, index, 'text', (v) => v)}
-          />
-          <style jsx>{`
-            div {
-              display: grid;
-              grid-template-columns: 6.5rem 3rem 1.5rem 1.5rem 4rem 1fr;
-              font-size: 0.75rem;
-              height: 100%;
-
-              input {
-                padding: 0 0.25rem;
-                border-right: 1px dotted #666;
-                text-align: center;
-
-                &.long {
-                  text-align: left;
-                }
-              }
-            }
-          `}</style>
-        </div>
-      );
-    },
-    [setItems],
-  );
+  const render: Render<SkillModification> = useRender(setItems);
   return (
     <AnimateHeight deps={items}>
       <div className="button-container">
@@ -109,3 +64,47 @@ export default function SkillModificationTable() {
     </AnimateHeight>
   );
 }
+
+const useRender = (setter: Dispatch<SetStateAction<SkillModification[]>>): Render<SkillModification> =>
+  useCallback(
+    (item, index) => {
+      return (
+        <div>
+          <input type="text" value={item.skill} onChange={createListOnChange(setter, index, 'skill', (v) => v)} />
+          <input type="text" value={item.base} onChange={createListOnChange(setter, index, 'base', (v) => v)} />
+          <input type="text" value={item.dice} onChange={createListOnChange(setter, index, 'dice', (v) => Number(v))} />
+          <input
+            type="text"
+            value={item.fixed}
+            onChange={createListOnChange(setter, index, 'fixed', (v) => Number(v))}
+          />
+          <input type="text" value={`${2 + item.dice}D+${7 + item.fixed}`} readOnly />
+          <input
+            className="long"
+            type="text"
+            value={item.text}
+            onChange={createListOnChange(setter, index, 'text', (v) => v)}
+          />
+          <style jsx>{`
+            div {
+              display: grid;
+              grid-template-columns: 6.5rem 3rem 1.5rem 1.5rem 4rem 1fr;
+              font-size: 0.75rem;
+              height: 100%;
+
+              input {
+                padding: 0 0.25rem;
+                border-right: 1px dotted #666;
+                text-align: center;
+
+                &.long {
+                  text-align: left;
+                }
+              }
+            }
+          `}</style>
+        </div>
+      );
+    },
+    [setter],
+  );
