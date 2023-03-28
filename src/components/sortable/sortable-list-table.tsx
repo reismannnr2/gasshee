@@ -16,12 +16,9 @@ export interface RenderOption {
   isDragging?: boolean;
 }
 
-export interface Render<T extends { id: string }> {
-  (item: T, index: number, option: RenderOption): React.ReactNode;
-}
-export interface UseRender<T extends { id: string }> {
-  (setter: Dispatch<SetStateAction<T[]>>): Render<T>;
-}
+export type Render<T extends { id: string }> = (item: T, index: number, option: RenderOption) => React.ReactNode;
+
+export type UseRender<T extends { id: string }> = (setter: Dispatch<SetStateAction<T[]>>) => Render<T>;
 
 export default function SortableListTable<T extends { id: string }>({ items, setter, render }: Props<T>) {
   const onDragEnd = useOnDragEnd(setter);
