@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import { nanoid } from 'nanoid';
-import { memo, useCallback, useState } from 'react';
+import { ChangeEvent, memo, useCallback, useState } from 'react';
 import { typedEntries } from '../../commons/object-utils';
 import { rangeArray } from '../../commons/range-util';
 import AnimateHeight from '../../components/animation/animate-height';
@@ -100,6 +100,15 @@ const Column = memo(function Column({ stat, skills, onChange }: ColumnProps) {
     },
     [onChange, stat],
   );
+  const onAdd = () => onChange((prev) => prev.concat({ ...notFixed, id: nanoid() }), stat);
+  const onRemove = () =>
+    onChange((prev) => {
+      const last = prev.at(-1);
+      if (!last || last.fixed) {
+        return prev;
+      }
+      return prev.slice(0, -1);
+    }, stat);
   return (
     <tr>
       <th>{stat}</th>
@@ -108,28 +117,10 @@ const Column = memo(function Column({ stat, skills, onChange }: ColumnProps) {
       ))}
       <td>
         <div className="button-container">
-          <button
-            type="button"
-            onClick={() => {
-              onChange((prev) => prev.concat({ ...notFixed, id: nanoid() }), stat);
-              return;
-            }}
-          >
+          <button type="button" onClick={onAdd}>
             +
           </button>
-          <button
-            type="button"
-            onClick={() => {
-              onChange((prev) => {
-                const last = prev.at(-1);
-                if (!last || last.fixed) {
-                  return prev;
-                }
-                return prev.slice(0, -1);
-              }, stat);
-              return;
-            }}
-          >
+          <button type="button" onClick={onRemove}>
             -
           </button>
         </div>
@@ -163,17 +154,12 @@ const Row = memo(function Row({ skill, index, onChange }: RowProps) {
     (level: number) => onChange((skill) => ({ ...skill, level }), index),
     [onChange, index],
   );
+  const onNameChange = (e: ChangeEvent<HTMLInputElement>) =>
+    onChange((skill) => ({ ...skill, name: e.target.value }), index);
   return (
     <td>
       <div>
-        <input
-          value={skill.name}
-          readOnly={skill.fixed}
-          onChange={(e) => {
-            onChange((skill) => ({ ...skill, name: e.target.value }), index);
-            return;
-          }}
-        />
+        <input value={skill.name} readOnly={skill.fixed} onChange={onNameChange} />
         <LevelSelect level={skill.level} onChange={onLevelChange} />
       </div>
       <style jsx>{`

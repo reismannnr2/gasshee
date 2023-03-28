@@ -1,5 +1,5 @@
 import DOMPurify from 'dompurify';
-
+import { FocusEvent } from 'react';
 export interface Props {
   raw: string;
   onChange: (value: string) => void;
@@ -11,16 +11,14 @@ export default function HTMLEditor({ raw, editMode, onChange }: Props) {
 }
 
 function EditMode({ raw, onChange }: { raw: string; onChange: (value: string) => void }) {
+  const onBlur = (e: FocusEvent<HTMLTextAreaElement>) => {
+    const purified = DOMPurify.sanitize(e.target.value);
+    e.target.value = purified;
+    onChange(purified);
+  };
   return (
     <>
-      <textarea
-        defaultValue={raw}
-        onBlur={(e) => {
-          const purified = DOMPurify.sanitize(e.target.value);
-          e.target.value = purified;
-          onChange(purified);
-        }}
-      />
+      <textarea defaultValue={raw} onBlur={onBlur} />
     </>
   );
 }
