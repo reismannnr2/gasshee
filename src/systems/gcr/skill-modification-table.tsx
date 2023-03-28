@@ -1,8 +1,8 @@
 import { nanoid } from 'nanoid';
-import { Dispatch, SetStateAction, useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { createListOnChange } from '../../commons/input-util';
 import AnimateHeight from '../../components/animation/animate-height';
-import SortableListTable, { Render } from '../../components/sortable/sortable-list-table';
+import SortableListTable, { UseRender } from '../../components/sortable/sortable-list-table';
 
 interface SkillModification {
   id: string;
@@ -22,7 +22,7 @@ const mock: SkillModification[] = [
 
 export default function SkillModificationTable() {
   const [items, setItems] = useState(mock);
-  const render: Render<SkillModification> = useRender(setItems);
+  const render = useRender(setItems);
   return (
     <AnimateHeight deps={items}>
       <div className="button-container">
@@ -65,7 +65,7 @@ export default function SkillModificationTable() {
   );
 }
 
-const useRender = (setter: Dispatch<SetStateAction<SkillModification[]>>): Render<SkillModification> =>
+const useRender: UseRender<SkillModification> = (setter) =>
   useCallback(
     (item, index) => {
       return (
