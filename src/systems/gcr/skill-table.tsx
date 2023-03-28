@@ -63,12 +63,11 @@ export default function SkillTable() {
             border-collapse: collapse;
             border: 1px dotted #666;
             font-size: 0.75rem;
-
-            & :global(td),
-            & :global(th) {
-              writing-mode: horizontal-tb;
-              border: 1px dotted #666;
-            }
+          }
+          table :global(td),
+          table :global(th) {
+            writing-mode: horizontal-tb;
+            border: 1px dotted #666;
           }
         `}</style>
       </table>
@@ -144,12 +143,9 @@ const Column = memo(function Column({ stat, skills, onChange }: ColumnProps) {
           grid-template-columns: 1fr 1fr;
           column-gap: 1rem;
           font-size: 0.75rem;
-
-          button {
-            &:hover {
-              background-color: #ddd;
-            }
-          }
+        }
+        button:hover {
+          background-color: #ddd;
         }
       `}</style>
     </tr>
@@ -184,15 +180,13 @@ const Row = memo(function Row({ skill, index, onChange }: RowProps) {
         div {
           display: grid;
           grid-template-columns: 6.5rem 1fr;
-
-          input {
-            border-right: 1px dotted #666;
-            text-align: center;
-
-            &:read-only {
-              cursor: default;
-            }
-          }
+        }
+        input {
+          border-right: 1px dotted #666;
+          text-align: center;
+        }
+        input:read-only {
+          cursor: default;
         }
       `}</style>
     </td>
@@ -222,24 +216,23 @@ const LevelSelect = memo(function LevelSelect({ level, onChange }: LevelSelectPr
           list-style-type: none;
           display: grid;
           grid-template-columns: repeat(6, 1fr);
+        }
+        li.selected {
+          background-color: black;
+          color: white;
+        }
+        li:not(.selected):hover {
+          background-color: #ddd;
+        }
+        li:not(:last-of-type) {
+          border-right: 1px dotted #666;
+        }
+        button {
+          display: inline-block;
+          width: 100%;
+          height: 100%;
 
-          li.selected {
-            background-color: black;
-            color: white;
-          }
-          li:not(.selected):hover {
-            background-color: #ddd;
-          }
-          li:not(:last-of-type) {
-            border-right: 1px dotted #666;
-          }
-          button {
-            display: inline-block;
-            width: 100%;
-            height: 100%;
-
-            text-align: center;
-          }
+          text-align: center;
         }
       `}</style>
     </ol>

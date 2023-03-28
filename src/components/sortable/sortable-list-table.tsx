@@ -63,14 +63,12 @@ const Row = genericMemo(function Row<T extends { id: string }>({ item, index, re
         li {
           display: grid;
           grid-template-columns: 1fr 1rem;
-
-          &:not(:last-of-type) {
-            border-bottom: 1px dotted #666;
-          }
-
-          &.dragging {
-            border: 1px dotted #666;
-          }
+        }
+        li:not(:last-of-type) {
+          border-bottom: 1px dotted #666;
+        }
+        li.dragging {
+          border: 1px dotted #666;
         }
       `}</style>
     </li>

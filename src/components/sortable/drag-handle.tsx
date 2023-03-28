@@ -11,9 +11,9 @@ export default forwardRef<HTMLButtonElement, JSX.IntrinsicElements['button']>(fu
           height: 100%;
           line-height: 1;
           cursor: grab;
-          &:active {
-            cursor: grabbing;
-          }
+        }
+        button:active {
+          cursor: grabbing;
         }
       `}</style>
     </button>

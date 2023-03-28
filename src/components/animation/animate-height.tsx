@@ -37,14 +37,13 @@ export default function AnimateHeight({ children, deps }: Props) {
         .wrapper {
           position: relative;
           height: auto;
-
-          &.rendered {
-            overflow: hidden;
-            transition: height 0.2s ease;
-            &:has(.dragging) {
-              overflow: visible;
-            }
-          }
+        }
+        .wrapper.rendered {
+          overflow: hidden;
+          transition: height 0.2s ease;
+        }
+        .wrapper.rendered.dragging {
+          overflow: visible;
         }
       `}</style>
       <style jsx>{`

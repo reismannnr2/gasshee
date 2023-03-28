@@ -50,12 +50,9 @@ export default function SkillModificationTable() {
           margin-bottom: 0.25rem;
 
           font-size: 0.75rem;
-
-          button {
-            &:hover {
-              background-color: #ddd;
-            }
-          }
+        }
+        button:hover {
+          background-color: #ddd;
         }
         .list-container :global(.drag-handle) {
           font-size: 0.75rem;
@@ -91,16 +88,14 @@ const useRender: UseRender<SkillModification> = (setter) =>
               grid-template-columns: 6.5rem 3rem 1.5rem 1.5rem 4rem 1fr;
               font-size: 0.75rem;
               height: 100%;
-
-              input {
-                padding: 0 0.25rem;
-                border-right: 1px dotted #666;
-                text-align: center;
-
-                &.long {
-                  text-align: left;
-                }
-              }
+            }
+            input {
+              padding: 0 0.25rem;
+              border-right: 1px dotted #666;
+              text-align: center;
+            }
+            input.long {
+              text-align: left;
             }
           `}</style>
         </div>
