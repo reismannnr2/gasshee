@@ -30,8 +30,9 @@ export default function AnimateHeight({ children, deps }: Props) {
       rerender();
     }
   }, [deps, rendered, rerender]);
+  const style = rendered ? { height: `${height.current || 0}px` } : undefined;
   return (
-    <div className={classNames({ rendered }, 'wrapper')}>
+    <div className={classNames({ rendered }, 'wrapper')} style={style}>
       <div ref={ref}>{children}</div>
       <style jsx>{`
         .wrapper {
@@ -42,7 +43,7 @@ export default function AnimateHeight({ children, deps }: Props) {
           overflow: hidden;
           transition: height 0.2s ease;
         }
-        .wrapper.rendered.dragging {
+        .wrapper.rendered:has(.dragging) {
           overflow: visible;
         }
       `}</style>
