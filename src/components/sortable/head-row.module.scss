@@ -1,0 +1,20 @@
+.head {
+  display: grid;
+  grid-template-columns: 1fr 1rem;
+  font-size: 0.75rem;
+  border-left: 1px dotted #666;
+}
+
+.item {
+  text-align: center;
+  border-top: 1px dotted #666;
+  border-right: 1px dotted #666;
+  border-bottom: 1px dotted #666;
+}
+
+.grab {
+  text-align: center;
+  border-top: 1px dotted #666;
+  border-right: 1px dotted #666;
+  border-bottom: 1px dotted #666;
+}

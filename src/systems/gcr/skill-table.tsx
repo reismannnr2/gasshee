@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import { nanoid } from 'nanoid';
 import { ChangeEvent, memo, useCallback, useState } from 'react';
-import { typedEntries } from '../../commons/object-utils';
+import { keysToObject, typedEntries } from '../../commons/object-utils';
 import { rangeArray } from '../../commons/range-util';
 import AnimateHeight from '../../components/animation/animate-height';
 import styles from './skill-table.module.scss';
@@ -20,19 +20,12 @@ type SkillSet = {
   [k in Stat]: Skill[];
 };
 
-const fixed = { id: nanoid(), name: 'name', level: 2, fixed: true };
-const notFixed = { id: nanoid(), name: '', level: 2, fixed: false };
+const fixed = { id: '', name: 'name', level: 2, fixed: true };
+const notFixed = { id: '', name: '', level: 2, fixed: false };
 
 const mock: Skill[] = [fixed, fixed, fixed, notFixed];
 const cloneBase = () => mock.map((s) => ({ ...s, id: nanoid() }));
-const mockSet = {
-  str: cloneBase(),
-  ref: cloneBase(),
-  dex: cloneBase(),
-  int: cloneBase(),
-  mnd: cloneBase(),
-  sym: cloneBase(),
-} as const;
+const mockSet: SkillSet = keysToObject(stats, cloneBase);
 
 export default function SkillTable() {
   const [skillSet, setSkillSet] = useState<SkillSet>(mockSet);

@@ -2,6 +2,7 @@ import { nanoid } from 'nanoid';
 import { useCallback, useState } from 'react';
 import { createListOnChange } from '../../commons/input-util';
 import AnimateHeight from '../../components/animation/animate-height';
+import HeadRow from '../../components/sortable/head-row';
 import SortableListTable, { UseRender } from '../../components/sortable/sortable-list-table';
 import styles from './skill-modification-table.module.scss';
 
@@ -20,6 +21,8 @@ const mock: SkillModification[] = [
   { id: nanoid(), skill: 'zzz', base: 'str', dice: 1, fixed: 2, text: '' },
   { id: nanoid(), skill: '', base: 'dex', dice: 0, fixed: 0, text: '' },
 ];
+
+const titles = ['skill', 'stat', 'dice', 'fixed', 'chat', 'text'];
 
 export default function SkillModificationTable() {
   const [items, setItems] = useState(mock);
@@ -40,6 +43,9 @@ export default function SkillModificationTable() {
         </button>
       </div>
       <div className={styles['list-container']}>
+        <HeadRow titles={titles} tag="li">
+          {(items) => <ol className={styles.titles}>{items}</ol>}
+        </HeadRow>
         <SortableListTable items={items} setter={setItems} render={render} />
       </div>
     </AnimateHeight>
