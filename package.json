@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "hcm": "hcm"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.0.8",
@@ -22,12 +23,14 @@
     "eslint": "^8.34.0",
     "eslint-config-next": "^13.2.1",
     "eslint-config-prettier": "^8.6.0",
+    "happy-css-modules": "^2.1.0",
     "jotai": "^2.0.3",
     "nanoid": "^4.0.1",
-    "next": "^13.2.1",
+    "next": "^13.2.4",
     "prettier": "^2.8.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "sass": "^1.60.0",
     "typescript": "^5.0.2"
   }
 }

@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import React, { useEffect, useRef, useState } from 'react';
 import { useRerender } from '../../commons/hook-util';
+import styles from './animate-height.module.scss';
 
 export interface Props {
   children?: React.ReactNode;
@@ -32,26 +33,8 @@ export default function AnimateHeight({ children, deps }: Props) {
   }, [deps, rendered, rerender]);
   const style = rendered ? { height: `${height.current || 0}px` } : undefined;
   return (
-    <div className={classNames({ rendered }, 'wrapper')} style={style}>
+    <div className={classNames({ rendered }, styles.wrapper)} style={style}>
       <div ref={ref}>{children}</div>
-      <style jsx>{`
-        .wrapper {
-          position: relative;
-          height: auto;
-        }
-        .wrapper.rendered {
-          overflow: hidden;
-          transition: height 0.2s ease;
-        }
-        .wrapper.rendered:has(.dragging) {
-          overflow: visible;
-        }
-      `}</style>
-      <style jsx>{`
-        .wrapper.rendered {
-          height: ${height.current || 0}px;
-        }
-      `}</style>
     </div>
   );
 }

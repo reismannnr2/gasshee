@@ -4,7 +4,7 @@ import { ChangeEvent, memo, useCallback, useState } from 'react';
 import { typedEntries } from '../../commons/object-utils';
 import { rangeArray } from '../../commons/range-util';
 import AnimateHeight from '../../components/animation/animate-height';
-
+import styles from './skill-table.module.scss';
 const stats = ['str', 'ref', 'dex', 'int', 'mnd', 'sym'] as const;
 
 type Stat = (typeof stats)[number];
@@ -48,28 +48,12 @@ export default function SkillTable() {
   );
   return (
     <AnimateHeight deps={skillSet}>
-      <table>
+      <table className={styles.table}>
         <tbody>
           {typedEntries(skillSet).map(([stat, skills]) => (
             <Column key={stat} stat={stat} skills={skills} onChange={onColumnChange} />
           ))}
         </tbody>
-        <style jsx>{`
-          table {
-            writing-mode: vertical-lr;
-            table-layout: fixed;
-            width: 100%;
-
-            border-collapse: collapse;
-            border: 1px dotted #666;
-            font-size: 0.75rem;
-          }
-          table :global(td),
-          table :global(th) {
-            writing-mode: horizontal-tb;
-            border: 1px dotted #666;
-          }
-        `}</style>
       </table>
     </AnimateHeight>
   );
@@ -111,12 +95,12 @@ const Column = memo(function Column({ stat, skills, onChange }: ColumnProps) {
     }, stat);
   return (
     <tr>
-      <th>{stat}</th>
+      <th className={styles['heading-cell']}>{stat}</th>
       {skills.map((skill, index) => (
         <Row key={skill.id} skill={skill} index={index} onChange={onRowChange} />
       ))}
       <td>
-        <div className="button-container">
+        <div className={styles.controllers}>
           <button type="button" onClick={onAdd}>
             +
           </button>
@@ -125,20 +109,6 @@ const Column = memo(function Column({ stat, skills, onChange }: ColumnProps) {
           </button>
         </div>
       </td>
-      <style jsx>{`
-        th {
-          cursor: default;
-        }
-        .button-container {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          column-gap: 1rem;
-          font-size: 0.75rem;
-        }
-        button:hover {
-          background-color: #ddd;
-        }
-      `}</style>
     </tr>
   );
 });
@@ -158,23 +128,10 @@ const Row = memo(function Row({ skill, index, onChange }: RowProps) {
     onChange((skill) => ({ ...skill, name: e.target.value }), index);
   return (
     <td>
-      <div>
+      <div className={styles['row-content']}>
         <input value={skill.name} readOnly={skill.fixed} onChange={onNameChange} />
         <LevelSelect level={skill.level} onChange={onLevelChange} />
       </div>
-      <style jsx>{`
-        div {
-          display: grid;
-          grid-template-columns: 6.5rem 1fr;
-        }
-        input {
-          border-right: 1px dotted #666;
-          text-align: center;
-        }
-        input:read-only {
-          cursor: default;
-        }
-      `}</style>
     </td>
   );
 });
@@ -186,7 +143,7 @@ interface LevelSelectProps {
 
 const LevelSelect = memo(function LevelSelect({ level, onChange }: LevelSelectProps) {
   return (
-    <ol>
+    <ol className={styles.levels}>
       {rangeArray(6).map((v) => {
         const selected = level === v + 1;
         return (
@@ -197,30 +154,6 @@ const LevelSelect = memo(function LevelSelect({ level, onChange }: LevelSelectPr
           </li>
         );
       })}
-      <style jsx>{`
-        ol {
-          list-style-type: none;
-          display: grid;
-          grid-template-columns: repeat(6, 1fr);
-        }
-        li.selected {
-          background-color: black;
-          color: white;
-        }
-        li:not(.selected):hover {
-          background-color: #ddd;
-        }
-        li:not(:last-of-type) {
-          border-right: 1px dotted #666;
-        }
-        button {
-          display: inline-block;
-          width: 100%;
-          height: 100%;
-
-          text-align: center;
-        }
-      `}</style>
     </ol>
   );
 });

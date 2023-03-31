@@ -5,7 +5,6 @@ export interface Props {
   onChange: (value: string) => void;
   editMode: boolean;
 }
-
 export default function HTMLEditor({ raw, editMode, onChange }: Props) {
   return <div>{editMode ? <EditMode raw={raw} onChange={onChange} /> : <ViewMode raw={raw} />}</div>;
 }

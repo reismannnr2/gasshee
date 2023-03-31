@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 import { createListOnChange } from '../../commons/input-util';
 import AnimateHeight from '../../components/animation/animate-height';
 import SortableListTable, { UseRender } from '../../components/sortable/sortable-list-table';
+import styles from './skill-modification-table.module.scss';
 
 interface SkillModification {
   id: string;
@@ -25,7 +26,7 @@ export default function SkillModificationTable() {
   const render = useRender(setItems);
   return (
     <AnimateHeight deps={items}>
-      <div className="button-container">
+      <div className={styles['button-container']}>
         <button
           type="button"
           onClick={() =>
@@ -38,26 +39,9 @@ export default function SkillModificationTable() {
           -
         </button>
       </div>
-      <div className="list-container">
+      <div className={styles['list-container']}>
         <SortableListTable items={items} setter={setItems} render={render} />
       </div>
-      <style jsx>{`
-        .button-container {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          column-gap: 1rem;
-          width: 10rem;
-          margin-bottom: 0.25rem;
-
-          font-size: 0.75rem;
-        }
-        button:hover {
-          background-color: #ddd;
-        }
-        .list-container :global(.drag-handle) {
-          font-size: 0.75rem;
-        }
-      `}</style>
     </AnimateHeight>
   );
 }
@@ -66,7 +50,7 @@ const useRender: UseRender<SkillModification> = (setter) =>
   useCallback(
     (item, index) => {
       return (
-        <div>
+        <div className={styles.content}>
           <input type="text" value={item.skill} onChange={createListOnChange(setter, index, 'skill', (v) => v)} />
           <input type="text" value={item.base} onChange={createListOnChange(setter, index, 'base', (v) => v)} />
           <input type="text" value={item.dice} onChange={createListOnChange(setter, index, 'dice', (v) => Number(v))} />
@@ -82,22 +66,6 @@ const useRender: UseRender<SkillModification> = (setter) =>
             value={item.text}
             onChange={createListOnChange(setter, index, 'text', (v) => v)}
           />
-          <style jsx>{`
-            div {
-              display: grid;
-              grid-template-columns: 6.5rem 3rem 1.5rem 1.5rem 4rem 1fr;
-              font-size: 0.75rem;
-              height: 100%;
-            }
-            input {
-              padding: 0 0.25rem;
-              border-right: 1px dotted #666;
-              text-align: center;
-            }
-            input.long {
-              text-align: left;
-            }
-          `}</style>
         </div>
       );
     },

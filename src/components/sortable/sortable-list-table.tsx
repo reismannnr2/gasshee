@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { Dispatch, SetStateAction } from 'react';
 import { genericMemo } from '../../commons/react-util';
 import DragHandle from './drag-handle';
+import styles from './sortable-list-table.module.scss';
 import VerticallySortable, { useOnDragEnd } from './vertically-sortable';
 
 export interface Props<T extends { id: string }> {
@@ -24,20 +25,11 @@ export default function SortableListTable<T extends { id: string }>({ items, set
   const onDragEnd = useOnDragEnd(setter);
   return (
     <VerticallySortable items={items} onDragEnd={onDragEnd}>
-      <ol>
+      <ol className={styles.list}>
         {items.map((item, index) => (
           <Row key={item.id} item={item} index={index} render={render} />
         ))}
       </ol>
-      <style jsx>{`
-        ol {
-          list-style-type: none;
-          border: 1px dotted #666;
-        }
-        ol:empty {
-          display: none;
-        }
-      `}</style>
     </VerticallySortable>
   );
 }
@@ -56,21 +48,9 @@ const Row = genericMemo(function Row<T extends { id: string }>({ item, index, re
     transition,
   };
   return (
-    <li ref={setNodeRef} className={classNames({ dragging: isDragging })} style={style}>
+    <li ref={setNodeRef} className={classNames(styles.item, { dragging: isDragging })} style={style}>
       {render(item, index, { isDragging })}
       <DragHandle ref={setActivatorNodeRef} {...attributes} {...listeners} />
-      <style jsx>{`
-        li {
-          display: grid;
-          grid-template-columns: 1fr 1rem;
-        }
-        li:not(:last-of-type) {
-          border-bottom: 1px dotted #666;
-        }
-        li.dragging {
-          border: 1px dotted #666;
-        }
-      `}</style>
     </li>
   );
 });
