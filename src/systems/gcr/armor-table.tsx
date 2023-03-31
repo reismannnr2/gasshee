@@ -1,8 +1,8 @@
 import { nanoid } from 'nanoid';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { rangeArray } from '../../commons/range-util';
 import AnimateHeight from '../../components/animation/animate-height';
-import SortableListTable from '../../components/sortable/sortable-list-table';
+import SortableListTable, { UseRender } from '../../components/sortable/sortable-list-table';
 
 export interface Armor {
   id: string;
@@ -40,13 +40,16 @@ const mockBase: Armor = {
   text: '',
 };
 const mock: Armor[] = rangeArray(4).map(() => ({ ...mockBase, id: nanoid() }));
+
 export default function GrowthTable() {
   const [items, setItems] = useState<Armor[]>(mock);
   return (
-    <AnimateHeight deps={items}>
+    <AnimateHeight>
       <div>
-        <SortableListTable items={items} setter={setItems} render={() => <></>} />
+        <SortableListTable items={items} setter={setItems} render={useRender(setItems)} />
       </div>
     </AnimateHeight>
   );
 }
+
+const useRender: UseRender<Armor> = () => useCallback(() => <></>, []);

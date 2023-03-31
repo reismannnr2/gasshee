@@ -40,7 +40,7 @@ export default function SkillTable() {
     [setSkillSet],
   );
   return (
-    <AnimateHeight deps={skillSet}>
+    <AnimateHeight>
       <table className={styles.table}>
         <tbody>
           {typedEntries(skillSet).map(([stat, skills]) => (

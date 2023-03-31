@@ -45,7 +45,7 @@ export default function AbilityTable() {
   const [items, setItems] = useState<Ability[]>(mock);
   const render = useRender(setItems);
   return (
-    <AnimateHeight deps={items}>
+    <AnimateHeight>
       <div className={styles.container}>
         <HeadRow titles={Object.keys(mockBase).slice(1, -1)} tag="li">
           {(items) => <ol className={styles.titles}>{items}</ol>}

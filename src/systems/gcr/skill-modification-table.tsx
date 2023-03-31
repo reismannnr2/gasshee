@@ -28,7 +28,7 @@ export default function SkillModificationTable() {
   const [items, setItems] = useState(mock);
   const render = useRender(setItems);
   return (
-    <AnimateHeight deps={items}>
+    <AnimateHeight>
       <div className={styles['button-container']}>
         <button
           type="button"
