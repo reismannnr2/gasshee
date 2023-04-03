@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { nanoid } from 'nanoid';
 import { ChangeEvent, memo, useCallback, useState } from 'react';
 import { keysToObject, typedEntries } from '../../commons/object-utils';
@@ -140,7 +140,7 @@ const LevelSelect = memo(function LevelSelect({ level, onChange }: LevelSelectPr
       {rangeArray(6).map((v) => {
         const selected = level === v + 1;
         return (
-          <li key={v} className={classNames({ selected })}>
+          <li key={v} className={clsx({ selected })}>
             <button type="button" onClick={() => onChange(v + 1)} disabled={selected}>
               {v + 1}
             </button>

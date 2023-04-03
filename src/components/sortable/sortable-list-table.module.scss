@@ -2,6 +2,7 @@
   list-style-type: none;
   border-bottom: 1px dotted #666;
   border-left: 1px dotted #666;
+
   &:empty {
     display: none;
   }
@@ -10,10 +11,13 @@
 .item {
   display: grid;
   grid-template-columns: 1fr 1rem;
+
   &:not(:last-of-type) {
     border-bottom: 1px dotted #666;
   }
+
   &:global(.dragging) {
     border: 1px dotted #666;
   }
 }
+ 

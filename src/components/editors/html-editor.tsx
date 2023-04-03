@@ -1,32 +1,50 @@
-import DOMPurify from 'dompurify';
-import { FocusEvent } from 'react';
-export interface Props {
-  raw: string;
-  onChange: (value: string) => void;
-  editMode: boolean;
-}
-export default function HTMLEditor({ raw, editMode, onChange }: Props) {
-  return <div>{editMode ? <EditMode raw={raw} onChange={onChange} /> : <ViewMode raw={raw} />}</div>;
-}
+import { RefObject, useCallback, useEffect, useRef } from 'react';
+import { useHtml } from '../../commons/hook-util';
+import Dialog, { useDialog } from '../layout/dialog';
 
-function EditMode({ raw, onChange }: { raw: string; onChange: (value: string) => void }) {
-  const onBlur = (e: FocusEvent<HTMLTextAreaElement>) => {
-    const purified = DOMPurify.sanitize(e.target.value);
-    e.target.value = purified;
-    onChange(purified);
-  };
+export default function HTMLEditor() {
+  const { ref, showModal, closeModal } = useDialog();
+  const [__html, setHtml] = useHtml();
+  const onClose = useCallback(
+    (edited: string) => {
+      setHtml(edited);
+      closeModal();
+    },
+    [closeModal, setHtml],
+  );
   return (
-    <>
-      <textarea defaultValue={raw} onBlur={onBlur} />
-    </>
+    <div>
+      <button type="button" onClick={showModal}>
+        EDIT
+      </button>
+      <div dangerouslySetInnerHTML={{ __html }} />
+      <EditDialog html={__html} dialogRef={ref} onClose={onClose} />
+    </div>
   );
 }
 
-function ViewMode({ raw }: { raw: string }) {
-  const purified = DOMPurify.sanitize(raw);
+interface EditDialogProps {
+  html: string;
+  dialogRef: RefObject<HTMLDialogElement>;
+  onClose: (edited: string) => void;
+}
+
+function EditDialog({ html, dialogRef, onClose }: EditDialogProps) {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  useEffect(() => {
+    if (!textareaRef.current) {
+      return;
+    }
+    textareaRef.current.value = html;
+  }, [html]);
   return (
-    <>
-      <div dangerouslySetInnerHTML={{ __html: purified }} />
-    </>
+    <Dialog
+      ref={dialogRef}
+      onClose={() => {
+        onClose(textareaRef.current?.value || '');
+      }}
+    >
+      <textarea ref={textareaRef} defaultValue={html}></textarea>
+    </Dialog>
   );
 }

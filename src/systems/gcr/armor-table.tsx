@@ -41,7 +41,7 @@ const mockBase: Armor = {
 };
 const mock: Armor[] = rangeArray(4).map(() => ({ ...mockBase, id: nanoid() }));
 
-export default function GrowthTable() {
+export default function ArmorTable() {
   const [items, setItems] = useState<Armor[]>(mock);
   return (
     <AnimateHeight>

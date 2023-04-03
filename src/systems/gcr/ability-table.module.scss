@@ -3,29 +3,30 @@
 }
 
 .titles {
-  list-style-type: none;
   display: grid;
   grid-template-columns: 1fr 3rem 6.5rem 6.5rem 4rem 8rem 4.5rem 4.5rem 4.5rem 5rem 8rem;
   font-size: 0.75rem;
+  list-style-type: none;
 }
 
 .content {
-  list-style-type: none;
   display: grid;
   grid-template-columns: 1fr 3rem 6.5rem 6.5rem 4rem 8rem 4.5rem 4.5rem 4.5rem 5rem 8rem;
   font-size: 0.75rem;
+  list-style-type: none;
+
   & > input {
     width: 100%;
     padding: 0 0.25rem;
+    text-align: center;
     border-right: 1px dotted #666;
     border-bottom: 1px dotted #666;
-    text-align: center;
   }
 }
 
 .text {
-  resize: none;
-  border-right: 1px dotted #666;
   width: 100%;
   padding: 0 0.25rem;
+  resize: none;
+  border-right: 1px dotted #666;
 }

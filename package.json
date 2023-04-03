@@ -18,7 +18,7 @@
     "@types/react-dom": "^18.0.11",
     "@typescript-eslint/eslint-plugin": "^5.54.0",
     "@typescript-eslint/parser": "^5.54.0",
-    "classnames": "^2.3.2",
+    "clsx": "^1.2.1",
     "dompurify": "^3.0.1",
     "eslint": "^8.34.0",
     "eslint-config-next": "^13.2.1",
@@ -27,10 +27,15 @@
     "jotai": "^2.0.3",
     "nanoid": "^4.0.1",
     "next": "^13.2.4",
+    "postcss-scss": "^4.0.6",
     "prettier": "^2.8.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "sass": "^1.60.0",
+    "stylelint": "^15.4.0",
+    "stylelint-config-css-modules": "^4.2.0",
+    "stylelint-config-recess-order": "^4.0.0",
+    "stylelint-config-standard-scss": "^7.0.1",
     "typescript": "^5.0.2"
   }
 }

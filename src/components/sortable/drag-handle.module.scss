@@ -1,12 +1,14 @@
 .drag-handle {
+  composes: drag-handle from global;
   display: inline-block;
   width: 100%;
   height: 100%;
   line-height: 1;
-  border-right: 1px dotted #666;
   cursor: grab;
+  border-right: 1px dotted #666;
 
   &:active {
     cursor: grabbing;
   }
 }
+ 

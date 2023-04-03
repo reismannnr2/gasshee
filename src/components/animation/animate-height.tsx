@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import clsx from 'clsx';
 import React, { CSSProperties, RefObject, useEffect, useMemo, useRef, useState } from 'react';
 import { useRerender } from '../../commons/hook-util';
 import styles from './animate-height.module.scss';
@@ -53,6 +53,6 @@ export function useAnimateHeight<E extends HTMLElement>(): AnimateHeightInfo<E> 
     return () => observer.disconnect();
   }, [observer]);
   const style = rendered ? { height: `${height.current || 0}px` } : {};
-  const className = classNames(styles.wrapper, { rendered });
+  const className = clsx(styles.wrapper, { rendered });
   return { style, ref, className };
 }

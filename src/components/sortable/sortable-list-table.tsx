@@ -1,6 +1,6 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import { Dispatch, SetStateAction } from 'react';
 import { genericMemo } from '../../commons/react-util';
 import DragHandle from './drag-handle';
@@ -48,7 +48,7 @@ const Row = genericMemo(function Row<T extends { id: string }>({ item, index, re
     transition,
   };
   return (
-    <li ref={setNodeRef} className={classNames(styles.item, { dragging: isDragging })} style={style}>
+    <li ref={setNodeRef} className={clsx(styles.item, { dragging: isDragging })} style={style}>
       {render(item, index, { isDragging })}
       <DragHandle ref={setActivatorNodeRef} {...attributes} {...listeners} />
     </li>
