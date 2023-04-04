@@ -1,17 +1,17 @@
 import { nanoid } from 'nanoid';
 import { useCallback, useState } from 'react';
 import { createListOnChange } from '../../commons/input-util';
+import { asIs } from '../../commons/object-utils';
 import { rangeArray } from '../../commons/range-util';
 import AnimateHeight from '../../components/animation/animate-height';
 import ControlButtons from '../../components/sortable/control-buttons';
 import HeadRow from '../../components/sortable/head-row';
 import SortableListTable, { UseRender } from '../../components/sortable/sortable-list-table';
 import styles from './ability-table.module.scss';
-
 export interface Ability {
   id: string;
   特技名: string;
-  LV: number;
+  LV: string;
   種別: string;
   技能: string;
   目標値: string;
@@ -27,7 +27,7 @@ export interface Ability {
 const mockBase: Ability = {
   id: '',
   特技名: '',
-  LV: 1,
+  LV: '',
   種別: '',
   技能: '',
   目標値: '',
@@ -64,28 +64,24 @@ const useRender: UseRender<Ability> = (setter) =>
     (item, index) => (
       <div>
         <div className={styles.content}>
-          <input type="text" value={item.特技名} onChange={createListOnChange(setter, index, '特技名', (v) => v)} />
-          <input type="text" value={item.LV} onChange={createListOnChange(setter, index, 'LV', (v) => Number(v))} />
-          <input type="text" value={item.種別} onChange={createListOnChange(setter, index, '種別', (v) => v)} />
-          <input type="text" value={item.技能} onChange={createListOnChange(setter, index, '技能', (v) => v)} />
-          <input type="text" value={item.目標値} onChange={createListOnChange(setter, index, '目標値', (v) => v)} />
-          <input
-            type="text"
-            value={item.タイミング}
-            onChange={createListOnChange(setter, index, 'タイミング', (v) => v)}
-          />
-          <input type="text" value={item.対象} onChange={createListOnChange(setter, index, '対象', (v) => v)} />
-          <input type="text" value={item.射程} onChange={createListOnChange(setter, index, '射程', (v) => v)} />
-          <input type="text" value={item.コスト} onChange={createListOnChange(setter, index, 'コスト', (v) => v)} />
-          <input type="text" value={item.制限} onChange={createListOnChange(setter, index, '制限', (v) => v)} />
-          <input type="text" value={item.出典} onChange={createListOnChange(setter, index, '出典', (v) => v)} />
+          <input type="text" value={item.特技名} onChange={createListOnChange(setter, index, '特技名', asIs)} />
+          <input type="text" value={item.LV} onChange={createListOnChange(setter, index, 'LV', asIs)} />
+          <input type="text" value={item.種別} onChange={createListOnChange(setter, index, '種別', asIs)} />
+          <input type="text" value={item.技能} onChange={createListOnChange(setter, index, '技能', asIs)} />
+          <input type="text" value={item.目標値} onChange={createListOnChange(setter, index, '目標値', asIs)} />
+          <input type="text" value={item.タイミング} onChange={createListOnChange(setter, index, 'タイミング', asIs)} />
+          <input type="text" value={item.対象} onChange={createListOnChange(setter, index, '対象', asIs)} />
+          <input type="text" value={item.射程} onChange={createListOnChange(setter, index, '射程', asIs)} />
+          <input type="text" value={item.コスト} onChange={createListOnChange(setter, index, 'コスト', asIs)} />
+          <input type="text" value={item.制限} onChange={createListOnChange(setter, index, '制限', asIs)} />
+          <input type="text" value={item.出典} onChange={createListOnChange(setter, index, '出典', asIs)} />
         </div>
         <div>
           <textarea
             className={styles.text}
             value={item.効果}
             rows={3}
-            onChange={createListOnChange(setter, index, '効果', (v) => v)}
+            onChange={createListOnChange(setter, index, '効果', asIs)}
           />
         </div>
       </div>
