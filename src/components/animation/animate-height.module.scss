@@ -3,7 +3,10 @@
   height: auto;
 
   &:global(.rendered) { 
-    overflow: hidden;
     transition: height 0.2s ease;
+  }
+
+  &:global(.animating) {
+    overflow: hidden;
   }
 }

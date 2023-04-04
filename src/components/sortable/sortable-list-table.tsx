@@ -1,8 +1,7 @@
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import clsx from 'clsx';
 import { Dispatch, SetStateAction } from 'react';
-import { genericMemo } from '../../commons/react-util';
+import { dataFlags, genericMemo } from '../../commons/react-util';
 import DragHandle from './drag-handle';
 import styles from './sortable-list-table.module.scss';
 import VerticallySortable, { useOnDragEnd } from './vertically-sortable';
@@ -48,7 +47,7 @@ const Row = genericMemo(function Row<T extends { id: string }>({ item, index, re
     transition,
   };
   return (
-    <li ref={setNodeRef} className={clsx(styles.item, { dragging: isDragging })} style={style}>
+    <li ref={setNodeRef} {...dataFlags({dragging: isDragging})} className={styles.item} style={style}>
       {render(item, index, { isDragging })}
       <DragHandle ref={setActivatorNodeRef} {...attributes} {...listeners} />
     </li>

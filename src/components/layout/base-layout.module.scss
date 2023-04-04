@@ -3,6 +3,7 @@
   grid-template-rows: 1rem 1fr 1rem;
   min-height: 100vh;
 }
+
 .main {
   width: 100%;
   max-width: 1200px;
@@ -11,13 +12,14 @@
 }
 
 .header {
-  font-size: 0.75rem;
   padding: 0.125rem 0.5rem;
+  font-family: monospace;
+  font-size: 0.75rem;
   line-height: 1;
   border-bottom: 1px dotted #666;
-  font-family: monospace;
 }
-.title {
+
+.title { 
   line-height: 1;
 }
 
@@ -26,6 +28,5 @@
   font-family: monospace;
   font-size: 0.75rem;
   line-height: 1;
-
   text-align: right;
 }

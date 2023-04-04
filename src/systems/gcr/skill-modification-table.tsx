@@ -2,6 +2,7 @@ import { nanoid } from 'nanoid';
 import { useCallback, useState } from 'react';
 import { createListOnChange } from '../../commons/input-util';
 import AnimateHeight from '../../components/animation/animate-height';
+import ControlButtons from '../../components/sortable/control-buttons';
 import HeadRow from '../../components/sortable/head-row';
 import SortableListTable, { UseRender } from '../../components/sortable/sortable-list-table';
 import styles from './skill-modification-table.module.scss';
@@ -19,8 +20,9 @@ const mock: SkillModification[] = [
   { id: nanoid(), skill: 'xxx', base: 'str', dice: 0, fixed: 1, text: '' },
   { id: nanoid(), skill: 'yyy', base: 'int', dice: 1, fixed: 2, text: '' },
   { id: nanoid(), skill: 'zzz', base: 'str', dice: 1, fixed: 2, text: '' },
-  { id: nanoid(), skill: '', base: 'dex', dice: 0, fixed: 0, text: '' },
+  { id: nanoid(), skill: '', base: '', dice: 0, fixed: 0, text: '' },
 ];
+const createMock = (): SkillModification => ({ id: nanoid(), skill: '', base: '', dice: 0, fixed: 0, text: '' });
 
 const titles = ['skill', 'stat', 'dice', 'fixed', 'chat', 'text'];
 
@@ -29,19 +31,7 @@ export default function SkillModificationTable() {
   const render = useRender(setItems);
   return (
     <AnimateHeight>
-      <div className={styles['button-container']}>
-        <button
-          type="button"
-          onClick={() =>
-            setItems((prev) => prev.concat({ id: nanoid(), skill: '', base: 'dex', dice: 0, fixed: 0, text: '' }))
-          }
-        >
-          +
-        </button>
-        <button type="button" onClick={() => setItems((prev) => prev.slice(0, -1))}>
-          -
-        </button>
-      </div>
+      <ControlButtons setter={setItems} initialize={createMock} />
       <div className={styles['list-container']}>
         <HeadRow titles={titles} tag="li">
           {(items) => <ol className={styles.titles}>{items}</ol>}

@@ -4,6 +4,7 @@ import { ChangeEvent, memo, useCallback, useState } from 'react';
 import { keysToObject, typedEntries } from '../../commons/object-utils';
 import { rangeArray } from '../../commons/range-util';
 import AnimateHeight from '../../components/animation/animate-height';
+
 import styles from './skill-table.module.scss';
 const stats = ['str', 'ref', 'dex', 'int', 'mnd', 'sym'] as const;
 

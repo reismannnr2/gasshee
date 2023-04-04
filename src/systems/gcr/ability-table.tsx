@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 import { createListOnChange } from '../../commons/input-util';
 import { rangeArray } from '../../commons/range-util';
 import AnimateHeight from '../../components/animation/animate-height';
+import ControlButtons from '../../components/sortable/control-buttons';
 import HeadRow from '../../components/sortable/head-row';
 import SortableListTable, { UseRender } from '../../components/sortable/sortable-list-table';
 import styles from './ability-table.module.scss';
@@ -39,7 +40,8 @@ const mockBase: Ability = {
   text: '',
 };
 
-const mock: Ability[] = rangeArray(4).map(() => ({ ...mockBase, id: nanoid() }));
+const createMock = () => ({ ...mockBase, id: nanoid() });
+const mock: Ability[] = rangeArray(4).map(createMock);
 
 export default function AbilityTable() {
   const [items, setItems] = useState<Ability[]>(mock);
@@ -47,6 +49,7 @@ export default function AbilityTable() {
   return (
     <AnimateHeight>
       <div className={styles.container}>
+        <ControlButtons setter={setItems} initialize={createMock} />
         <HeadRow titles={Object.keys(mockBase).slice(1, -1)} tag="li">
           {(items) => <ol className={styles.titles}>{items}</ol>}
         </HeadRow>

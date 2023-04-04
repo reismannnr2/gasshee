@@ -8,51 +8,72 @@ export interface Props {
 }
 
 export default function AnimateHeight({ children }: Props) {
-  const { style, className, ref } = useAnimateHeight<HTMLDivElement>();
+  const { style, className, innerRef, outerRef } = useAnimateHeight();
   return (
-    <div className={className} style={style}>
-      <div ref={ref}>{children}</div>
+    <div className={className} style={style} ref={outerRef}>
+      <div ref={innerRef}>{children}</div>
     </div>
   );
 }
 
-interface AnimateHeightInfo<E> {
+export interface AnimateHeightInfo<
+  Inner extends HTMLElement = HTMLDivElement,
+  Outer extends HTMLElement = HTMLDivElement,
+> {
   style: CSSProperties;
   className: string;
-  ref: RefObject<E>;
+  innerRef: RefObject<Inner>;
+  outerRef: RefObject<Outer>;
 }
 
-export function useAnimateHeight<E extends HTMLElement>(): AnimateHeightInfo<E> {
+export function useAnimateHeight<
+  Inner extends HTMLElement = HTMLDivElement,
+  Outer extends HTMLElement = HTMLDivElement,
+>(): AnimateHeightInfo<Inner, Outer> {
   const height = useRef(0);
-  const ref = useRef<E>(null);
+  const innerRef = useRef<Inner>(null);
+  const outerRef = useRef<Outer>(null);
   const rerender = useRerender();
   const [rendered, setRendered] = useState(false);
+  const [animating, setAnimating] = useState(false);
   const observer = useMemo(
     () =>
       new MutationObserver(() => {
-        const div = ref.current;
+        const div = innerRef.current;
         if (!div) {
           return;
         }
         const next = div.getBoundingClientRect().height;
         if (height.current !== next) {
           height.current = next;
+          setAnimating(true);
           rerender();
         }
       }),
     [rerender],
   );
   useEffect(() => {
-    const element = ref.current;
-    if (!element) {
+    const inner = innerRef.current;
+    const outer = outerRef.current;
+    if (!inner || !outer) {
       return;
     }
-    height.current = element.getBoundingClientRect().height;
+    height.current = inner.getBoundingClientRect().height;
     setRendered(true);
-    observer.observe(element, { subtree: true, attributes: true, childList: true, characterData: true });
-    return () => observer.disconnect();
+    observer.observe(inner, { subtree: true, attributes: true, childList: true, characterData: true });
+    const onAnimationEnd = () => setAnimating(false);
+    const onAnimationStart = () => setAnimating(true);
+    outer.addEventListener('animationstart', onAnimationStart);
+    outer.addEventListener('animationcancel', onAnimationEnd);
+    outer.addEventListener('animationend', onAnimationEnd);
+    return () => {
+      observer.disconnect();
+      outer.removeEventListener('animationstart', onAnimationStart);
+      outer.removeEventListener('animationcancel', onAnimationEnd);
+      outer.removeEventListener('animationend', onAnimationEnd);
+    };
   }, [observer]);
   const style = rendered ? { height: `${height.current || 0}px` } : {};
-  const className = clsx(styles.wrapper, { rendered });
-  return { style, ref, className };
+  const className = clsx(styles.wrapper, { rendered, animating });
+  return { style, innerRef, outerRef, className };
 }

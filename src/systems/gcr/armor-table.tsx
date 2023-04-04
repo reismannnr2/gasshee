@@ -45,9 +45,7 @@ export default function ArmorTable() {
   const [items, setItems] = useState<Armor[]>(mock);
   return (
     <AnimateHeight>
-      <div>
-        <SortableListTable items={items} setter={setItems} render={useRender(setItems)} />
-      </div>
+      <SortableListTable items={items} setter={setItems} render={useRender(setItems)} />
     </AnimateHeight>
   );
 }

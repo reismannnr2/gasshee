@@ -16,7 +16,7 @@
     border-bottom: 1px dotted #666;
   }
 
-  &:global(.dragging) {
+  &[data-dragging] {
     border: 1px dotted #666;
   }
 }
