@@ -10,38 +10,38 @@ import styles from './ability-table.module.scss';
 
 export interface Ability {
   id: string;
-  name: string;
-  level: number;
-  kind: string;
-  skill: string;
-  required: string;
-  timing: string;
-  target: string;
-  range: string;
-  cost: string;
-  limit: string;
-  source: string;
-  text: string;
+  特技名: string;
+  LV: number;
+  種別: string;
+  技能: string;
+  目標値: string;
+  タイミング: string;
+  対象: string;
+  射程: string;
+  コスト: string;
+  制限: string;
+  出典: string;
+  効果: string;
 }
 
 const mockBase: Ability = {
   id: '',
-  name: '',
-  level: 1,
-  kind: '',
-  skill: '',
-  required: '',
-  timing: '',
-  target: '',
-  range: '',
-  cost: '',
-  limit: '',
-  source: '',
-  text: '',
+  特技名: '',
+  LV: 1,
+  種別: '',
+  技能: '',
+  目標値: '',
+  タイミング: '',
+  対象: '',
+  射程: '',
+  コスト: '',
+  制限: '',
+  出典: '',
+  効果: '',
 };
 
 const createMock = () => ({ ...mockBase, id: nanoid() });
-const mock: Ability[] = rangeArray(4).map(createMock);
+const mock: Ability[] = rangeArray(1).map(createMock);
 
 export default function AbilityTable() {
   const [items, setItems] = useState<Ability[]>(mock);
@@ -64,28 +64,28 @@ const useRender: UseRender<Ability> = (setter) =>
     (item, index) => (
       <div>
         <div className={styles.content}>
-          <input type="text" value={item.name} onChange={createListOnChange(setter, index, 'name', (v) => v)} />
+          <input type="text" value={item.特技名} onChange={createListOnChange(setter, index, '特技名', (v) => v)} />
+          <input type="text" value={item.LV} onChange={createListOnChange(setter, index, 'LV', (v) => Number(v))} />
+          <input type="text" value={item.種別} onChange={createListOnChange(setter, index, '種別', (v) => v)} />
+          <input type="text" value={item.技能} onChange={createListOnChange(setter, index, '技能', (v) => v)} />
+          <input type="text" value={item.目標値} onChange={createListOnChange(setter, index, '目標値', (v) => v)} />
           <input
             type="text"
-            value={item.level}
-            onChange={createListOnChange(setter, index, 'level', (v) => Number(v))}
+            value={item.タイミング}
+            onChange={createListOnChange(setter, index, 'タイミング', (v) => v)}
           />
-          <input type="text" value={item.kind} onChange={createListOnChange(setter, index, 'kind', (v) => v)} />
-          <input type="text" value={item.skill} onChange={createListOnChange(setter, index, 'skill', (v) => v)} />
-          <input type="text" value={item.required} onChange={createListOnChange(setter, index, 'required', (v) => v)} />
-          <input type="text" value={item.timing} onChange={createListOnChange(setter, index, 'timing', (v) => v)} />
-          <input type="text" value={item.target} onChange={createListOnChange(setter, index, 'target', (v) => v)} />
-          <input type="text" value={item.range} onChange={createListOnChange(setter, index, 'range', (v) => v)} />
-          <input type="text" value={item.cost} onChange={createListOnChange(setter, index, 'cost', (v) => v)} />
-          <input type="text" value={item.limit} onChange={createListOnChange(setter, index, 'limit', (v) => v)} />
-          <input type="text" value={item.source} onChange={createListOnChange(setter, index, 'source', (v) => v)} />
+          <input type="text" value={item.対象} onChange={createListOnChange(setter, index, '対象', (v) => v)} />
+          <input type="text" value={item.射程} onChange={createListOnChange(setter, index, '射程', (v) => v)} />
+          <input type="text" value={item.コスト} onChange={createListOnChange(setter, index, 'コスト', (v) => v)} />
+          <input type="text" value={item.制限} onChange={createListOnChange(setter, index, '制限', (v) => v)} />
+          <input type="text" value={item.出典} onChange={createListOnChange(setter, index, '出典', (v) => v)} />
         </div>
         <div>
           <textarea
             className={styles.text}
-            value={item.text}
-            rows={4}
-            onChange={createListOnChange(setter, index, 'text', (v) => v)}
+            value={item.効果}
+            rows={3}
+            onChange={createListOnChange(setter, index, '効果', (v) => v)}
           />
         </div>
       </div>

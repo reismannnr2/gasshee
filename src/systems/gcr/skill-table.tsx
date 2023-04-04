@@ -6,23 +6,24 @@ import { rangeArray } from '../../commons/range-util';
 import AnimateHeight from '../../components/animation/animate-height';
 
 import styles from './skill-table.module.scss';
-const stats = ['str', 'ref', 'dex', 'int', 'mnd', 'sym'] as const;
+const stats = ['筋力', '反射', '感覚', '知力', '精神', '共感'] as const;
 
 type Stat = (typeof stats)[number];
 
 interface Skill {
   id: string;
-  name: string;
-  level: number;
   fixed?: boolean;
+
+  名称: string;
+  LV: number;
 }
 
 type SkillSet = {
   [k in Stat]: Skill[];
 };
 
-const fixed = { id: '', name: 'name', level: 2, fixed: true };
-const notFixed = { id: '', name: '', level: 2, fixed: false };
+const fixed = { id: '', fixed: true, 名称: 'name', LV: 2 };
+const notFixed = { id: '', fixed: false, 名称: '', LV: 2 };
 
 const mock: Skill[] = [fixed, fixed, fixed, notFixed];
 const cloneBase = () => mock.map((s) => ({ ...s, id: nanoid() }));
@@ -89,7 +90,7 @@ const Column = memo(function Column({ stat, skills, onChange }: ColumnProps) {
     }, stat);
   return (
     <tr>
-      <th className={styles['heading-cell']}>{stat}</th>
+      <th>{stat}</th>
       {skills.map((skill, index) => (
         <Row key={skill.id} skill={skill} index={index} onChange={onRowChange} />
       ))}
@@ -114,17 +115,14 @@ interface RowProps {
 }
 
 const Row = memo(function Row({ skill, index, onChange }: RowProps) {
-  const onLevelChange = useCallback(
-    (level: number) => onChange((skill) => ({ ...skill, level }), index),
-    [onChange, index],
-  );
+  const onLevelChange = useCallback((LV: number) => onChange((skill) => ({ ...skill, LV }), index), [onChange, index]);
   const onNameChange = (e: ChangeEvent<HTMLInputElement>) =>
     onChange((skill) => ({ ...skill, name: e.target.value }), index);
   return (
     <td>
       <div className={styles['row-content']}>
-        <input value={skill.name} readOnly={skill.fixed} onChange={onNameChange} />
-        <LevelSelect level={skill.level} onChange={onLevelChange} />
+        <input value={skill.名称} readOnly={skill.fixed} onChange={onNameChange} />
+        <LevelSelect level={skill.LV} onChange={onLevelChange} />
       </div>
     </td>
   );

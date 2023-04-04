@@ -2,11 +2,15 @@
   position: relative;
   height: auto;
 
-  &:global(.rendered) { 
+  &:global(.rendered) {
     transition: height 0.2s ease;
   }
 
   &:global(.animating) {
     overflow: hidden;
+
+    &:has([data-dragging]) {
+      overflow: visible;
+    }
   }
 }

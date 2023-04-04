@@ -34,3 +34,7 @@ export function replaced<T extends Record<string, unknown>>(prev: T, key: keyof 
   next[key] = value;
   return next;
 }
+
+export function asIs<T>(v: T): T {
+  return v;
+}

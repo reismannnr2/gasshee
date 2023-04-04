@@ -1,0 +1,40 @@
+.titles {
+  display: grid;
+  grid-template-columns: 1.5rem 10rem 6.5rem 2.5rem 2.5rem 2.5rem 2.5rem 2.5rem 2.5rem 2.5rem 2.5rem 1fr;
+  font-size: 0.75rem;
+  list-style-type: none;
+
+  & > li:first-child {
+    border-right: 1px dotted #666;
+  }
+
+  & > li:nth-child(4),
+  & > li:nth-child(8),
+  & > li:nth-child(11) {
+    border-right: 1px solid #000;
+  }
+}
+
+.content {
+  display: grid;
+  grid-template-columns: 1.5rem 10rem 6.5rem 2.5rem 2.5rem 2.5rem 2.5rem 2.5rem 2.5rem 2.5rem 2.5rem 1fr;
+  font-size: 0.75rem;
+  list-style-type: none;
+
+  & > input {
+    width: 100%;
+    padding: 0 0.25rem;
+    text-align: center;
+    border-right: 1px dotted #666;
+
+    &:nth-child(4),
+    &:nth-child(8),
+    &:nth-child(11) {
+      border-right: 1px solid #000;
+    }
+
+    &:global(.long) {
+      text-align: left;
+    }
+  }
+}

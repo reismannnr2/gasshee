@@ -5,10 +5,8 @@
   height: 100%;
   line-height: 1;
   cursor: grab;
-  border-right: 1px dotted #666;
 
   &:active {
     cursor: grabbing;
   }
 }
- 
