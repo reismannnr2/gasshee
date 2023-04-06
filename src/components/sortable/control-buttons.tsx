@@ -1,15 +1,20 @@
 import { Dispatch, SetStateAction } from 'react';
 import { typedEntries } from '../../commons/object-utils';
+import { dataFlags } from '../../commons/react-util';
 import styles from './control-buttons.module.scss';
 
 export interface Props<T extends { id: string }> {
   setter: Dispatch<SetStateAction<T[]>>;
   initialize: () => T;
+  abbr?: {
+    setter: Dispatch<SetStateAction<boolean>>;
+    value: boolean;
+  };
 }
 
-export default function ControlButtons<T extends { id: string }>({ setter, initialize }: Props<T>) {
+export default function ControlButtons<T extends { id: string }>({ setter, initialize, abbr }: Props<T>) {
   return (
-    <div className={styles.container}>
+    <div className={styles.container} {...dataFlags({ abbr })}>
       <button type="button" onClick={() => setter((prev) => prev.concat(initialize()))}>
         +
       </button>
@@ -31,6 +36,11 @@ export default function ControlButtons<T extends { id: string }>({ setter, initi
       >
         -
       </button>
+      {abbr && (
+        <button type="button" onClick={() => abbr.setter((prev) => !prev)}>
+          {abbr.value ? '詳細表示' : '短縮表示'}
+        </button>
+      )}
     </div>
   );
 }

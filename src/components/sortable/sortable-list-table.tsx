@@ -47,7 +47,7 @@ const Row = genericMemo(function Row<T extends { id: string }>({ item, index, re
     transition,
   };
   return (
-    <li ref={setNodeRef} {...dataFlags({dragging: isDragging})} className={styles.item} style={style}>
+    <li ref={setNodeRef} {...dataFlags({ dragging: isDragging })} className={styles.item} style={style}>
       {render(item, index, { isDragging })}
       <DragHandle ref={setActivatorNodeRef} {...attributes} {...listeners} />
     </li>

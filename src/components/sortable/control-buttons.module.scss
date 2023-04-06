@@ -6,6 +6,11 @@
   margin-bottom: 0.25rem;
   font-size: 0.75rem;
 
+  &[data-abbr] {
+    grid-template-columns: 1fr 1fr 1fr;
+    width: 15.5rem;
+  }
+
   > button:hover {
     background-color: #ddd;
   }
