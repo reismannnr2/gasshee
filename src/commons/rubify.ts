@@ -61,7 +61,7 @@ function parse(input: readonly Token[]): RubyItem[] {
       continue;
     }
     if (token.type === 'open') {
-      const [item, next] = parsUntilTermination(rest.slice(1));
+      const [item, next] = parseUntilTermination(rest.slice(1));
       if (item) {
         items.push(item);
       }
@@ -90,10 +90,11 @@ function tokenize(input: Readonly<string>): Token[] {
     }
     // 特別なトークン
     if (c === '{' || c === '}' || c === ':') {
-      const spToken = spTokens[c];
-      const nextTokens: Token[] = temp ? [{ type: 'text', value: temp }, spToken] : [spToken];
-      tokens.push(...nextTokens);
-      temp = '';
+      if (temp) {
+        tokens.push({ type: 'text', value: temp });
+        temp = '';
+      }
+      tokens.push(spTokens[c]);
       continue;
     }
     // ただのテキスト
@@ -106,7 +107,7 @@ function tokenize(input: Readonly<string>): Token[] {
 }
 
 // ルビフォーマット終了までをパース
-function parsUntilTermination(input: readonly Token[]): [RubyItem | undefined, Token[]] {
+function parseUntilTermination(input: readonly Token[]): [RubyItem | undefined, Token[]] {
   if (input.length === 0) {
     return [undefined, []];
   }
