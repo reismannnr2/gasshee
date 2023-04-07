@@ -27,7 +27,7 @@ export default function VerticallySortable<T extends { id: string }>({ items, on
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   );
   return (
-    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
+    <DndContext collisionDetection={closestCenter} sensors={sensors} onDragEnd={onDragEnd}>
       <SortableContext items={items} strategy={verticalListSortingStrategy}>
         {children}
       </SortableContext>

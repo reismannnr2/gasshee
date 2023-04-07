@@ -8,48 +8,43 @@ import AnimateHeight from '../../components/animation/animate-height';
 import ControlButtons from '../../components/sortable/control-buttons';
 import HeadRow from '../../components/sortable/head-row';
 import SortableListTable, { UseRender } from '../../components/sortable/sortable-list-table';
-import styles from './magic-table.module.scss';
-export interface Magic {
+import styles from './armie-ability-table.module.scss';
+
+export interface ArmieAbility {
   id: string;
-  魔法名: string;
+  特技名: string;
   LV: string;
   種別: string;
-  持続時間: string;
   技能: string;
   目標値: string;
   タイミング: string;
   対象: string;
   射程: string;
   コスト: string;
-  MC: string;
   制限: string;
-  出典: string;
   効果: string;
 }
 
-const mockBase: Magic = {
+export const mockBase: ArmieAbility = {
   id: '',
-  魔法名: '',
+  特技名: '',
   LV: '',
   種別: '',
-  持続時間: '',
   技能: '',
   目標値: '',
   タイミング: '',
   対象: '',
   射程: '',
-  MC: '',
   コスト: '',
   制限: '',
-  出典: '',
   効果: '',
 };
 
-const createMock = () => ({ ...mockBase, id: nanoid() });
-const mock: Magic[] = rangeArray(1).map(createMock);
+export const createMock = (): ArmieAbility => ({ ...mockBase, id: nanoid() });
+export const mock: ArmieAbility[] = rangeArray(1).map(createMock);
 
-export default function MagicTable() {
-  const [items, setItems] = useState<Magic[]>(mock);
+export default function ArmieAbilityTable() {
+  const [items, setItems] = useState<ArmieAbility[]>(mock);
   const [abbr, setAbbr] = useState<boolean>(true);
   const render = useRender(setItems);
   return (
@@ -65,7 +60,7 @@ export default function MagicTable() {
   );
 }
 
-const useRender: UseRender<Magic> = (setter) =>
+export const useRender: UseRender<ArmieAbility> = (setter) =>
   useCallback(
     (item, index) => (
       <div>

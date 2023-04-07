@@ -32,12 +32,12 @@ export default function SkillModificationTable() {
   const render = useRender(setItems);
   return (
     <AnimateHeight>
-      <ControlButtons setter={setItems} initialize={createMock} />
+      <ControlButtons initialize={createMock} setter={setItems} />
       <div className={styles['list-container']}>
-        <HeadRow titles={titles} tag="li">
+        <HeadRow tag="li" titles={titles}>
           {(items) => <ol className={styles.titles}>{items}</ol>}
         </HeadRow>
-        <SortableListTable items={items} setter={setItems} render={render} />
+        <SortableListTable items={items} render={render} setter={setItems} />
       </div>
     </AnimateHeight>
   );
@@ -52,7 +52,7 @@ const useRender: UseRender<SkillModification> = (setter) =>
           <input type="text" value={item.能力値} onChange={createListOnChange(setter, index, '能力値', asIs)} />
           <input type="text" value={item.ダイス} onChange={createListOnChange(setter, index, 'ダイス', asIs)} />
           <input type="text" value={item.固定値} onChange={createListOnChange(setter, index, '固定値', asIs)} />
-          <input type="text" value={`${2 + Number(item.ダイス) || 0}D+${7 + (Number(item.固定値) || 0)}`} readOnly />
+          <input readOnly type="text" value={`${2 + Number(item.ダイス) || 0}D+${7 + (Number(item.固定値) || 0)}`} />
           <input
             className="long"
             type="text"

@@ -1,6 +1,7 @@
 import BaseLayout from '../components/layout/base-layout';
 import NoSSR from '../components/no-ssr';
 import AbilityTable from '../systems/gcr/ability-table';
+import ArmieTable from '../systems/gcr/armie-table';
 import ArmorTable from '../systems/gcr/armor-table';
 import MagicTable from '../systems/gcr/magic-table';
 import SkillModificationTable from '../systems/gcr/skill-modification-table';
@@ -30,6 +31,9 @@ export default function Home() {
           </section>
           <section>
             <ArmorTable />
+          </section>
+          <section>
+            <ArmieTable />
           </section>
           <section>Hoge</section>
           <div id="test" />

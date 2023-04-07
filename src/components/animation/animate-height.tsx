@@ -10,7 +10,7 @@ export interface Props {
 export default function AnimateHeight({ children }: Props) {
   const { style, className, innerRef, outerRef } = useAnimateHeight();
   return (
-    <div className={className} style={style} ref={outerRef}>
+    <div ref={outerRef} className={className} style={style}>
       <div ref={innerRef}>{children}</div>
     </div>
   );

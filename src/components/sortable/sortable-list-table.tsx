@@ -26,7 +26,7 @@ export default function SortableListTable<T extends { id: string }>({ items, set
     <VerticallySortable items={items} onDragEnd={onDragEnd}>
       <ol className={styles.list}>
         {items.map((item, index) => (
-          <Row key={item.id} item={item} index={index} render={render} />
+          <Row key={item.id} index={index} item={item} render={render} />
         ))}
       </ol>
     </VerticallySortable>

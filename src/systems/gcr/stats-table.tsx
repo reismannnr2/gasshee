@@ -72,14 +72,14 @@ function BaseStatTable() {
         </tr>
       </thead>
       <tbody>
-        <StatsRow title="ワークス" init={baseStats} readonly />
-        <StatsRow title="初期ボーナス" init={emptyStats} />
-        <StatsRow title="成長" init={emptyStats} />
-        <StatsRow title="その他" init={emptyStats} />
-        <StatsRow title="基本値" init={baseStats} readonly summary />
-        <StatsRow title="スタイル" init={baseStats} readonly />
-        <StatsRow title="その他" init={emptyStats} />
-        <StatsRow title="計" init={baseStats} readonly summary />
+        <StatsRow readonly init={baseStats} title="ワークス" />
+        <StatsRow init={emptyStats} title="初期ボーナス" />
+        <StatsRow init={emptyStats} title="成長" />
+        <StatsRow init={emptyStats} title="その他" />
+        <StatsRow readonly summary init={baseStats} title="基本値" />
+        <StatsRow readonly init={baseStats} title="スタイル" />
+        <StatsRow init={emptyStats} title="その他" />
+        <StatsRow readonly summary init={baseStats} title="計" />
       </tbody>
     </table>
   );
@@ -103,9 +103,9 @@ function StatsRow({
       {typedEntries(stats).map(([key, value]) => (
         <td key={key}>
           <input
+            readOnly={readonly}
             type="text"
             value={value}
-            readOnly={readonly}
             onChange={(e) => {
               if (readonly) {
                 return;
@@ -138,12 +138,12 @@ function SubStatsTable() {
         </tr>
       </thead>
       <tbody>
-        <SubStatsRow title="ワークス" init={baseSubStats} readonly />
-        <SubStatsRow title="スタイル" init={baseSubStats} readonly />
-        <SubStatsRow title="ベース値" init={emptySubStats} />
-        <SubStatsRow title="その他" init={emptySubStats} />
-        <SubStatsRow title="基本値" init={baseSubStats} readonly summary />
-        <SubStatsRow title="計" init={baseSubStats} readonly summary />
+        <SubStatsRow readonly init={baseSubStats} title="ワークス" />
+        <SubStatsRow readonly init={baseSubStats} title="スタイル" />
+        <SubStatsRow init={emptySubStats} title="ベース値" />
+        <SubStatsRow init={emptySubStats} title="その他" />
+        <SubStatsRow readonly summary init={baseSubStats} title="基本値" />
+        <SubStatsRow readonly summary init={baseSubStats} title="計" />
       </tbody>
     </table>
   );
@@ -168,9 +168,9 @@ function SubStatsRow({
       {typedEntries(stats).map(([key, value]) => (
         <td key={key}>
           <input
+            readOnly={readonly}
             type="text"
             value={value}
-            readOnly={readonly}
             onChange={(e) => {
               if (readonly) {
                 return;

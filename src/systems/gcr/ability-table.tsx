@@ -53,11 +53,11 @@ export default function AbilityTable() {
   return (
     <AnimateHeight>
       <div className={styles.container} {...dataFlags({ abbr })}>
-        <ControlButtons setter={setItems} initialize={createMock} abbr={{ value: abbr, setter: setAbbr }} />
-        <HeadRow titles={Object.keys(mockBase).slice(1, -1)} tag="li">
+        <ControlButtons abbr={{ value: abbr, setter: setAbbr }} initialize={createMock} setter={setItems} />
+        <HeadRow tag="li" titles={Object.keys(mockBase).slice(1, -1)}>
           {(items) => <ol className={styles.titles}>{items}</ol>}
         </HeadRow>
-        <SortableListTable items={items} setter={setItems} render={render} />
+        <SortableListTable items={items} render={render} setter={setItems} />
       </div>
     </AnimateHeight>
   );
@@ -77,8 +77,8 @@ const useRender: UseRender<Ability> = (setter) =>
         <div className={styles.detail}>
           <textarea
             className={styles.text}
-            value={item.効果}
             rows={3}
+            value={item.効果}
             onChange={createListOnChange(setter, index, '効果', asIs)}
           />
         </div>

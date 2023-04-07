@@ -9,7 +9,7 @@ export interface Props {
 
 export default function HeadRow({ titles, tag: Wrapper, children }: Props) {
   const items = titles.map((title) => (
-    <Wrapper className={styles.item} key={title}>
+    <Wrapper key={title} className={styles.item}>
       {title}
     </Wrapper>
   ));

@@ -1,11 +1,8 @@
-import { nanoid } from 'nanoid';
-import { useCallback, useState } from 'react';
-import { rangeArray } from '../../commons/range-util';
-import { dataFlags } from '../../commons/react-util';
-import AnimateHeight from '../../components/animation/animate-height';
-import ControlButtons from '../../components/sortable/control-buttons';
+import { useState } from 'react';
+import { createObjectOnChange } from '../../commons/input-util';
+import { asIs, typedEntries } from '../../commons/object-utils';
 import HeadRow from '../../components/sortable/head-row';
-import SortableListTable, { UseRender } from '../../components/sortable/sortable-list-table';
+import ArmieAbilityTable from './armie-ability-table';
 import styles from './armie-table.module.scss';
 interface Armie {
   id: string;
@@ -33,61 +30,53 @@ interface Armie {
   備考: string;
 }
 
-interface ArmieAbility {
-  id: string;
-  特技名: string;
-  LV: string;
-  種別: string;
-  技能: string;
-  目標値: string;
-  タイミング: string;
-  対象: string;
-  射程: string;
-  コスト: string;
-  制限: string;
-  効果: string;
-}
-
 export default function ArmieTable() {
   return (
-    <>
+    <div>
+      <ArmieBaseTable />
       <ArmieAbilityTable />
-    </>
+    </div>
   );
 }
 
-const mockBase: ArmieAbility = {
+const mockBase: Armie = {
   id: '',
-  特技名: '',
+  名称: '',
   LV: '',
-  種別: '',
-  技能: '',
-  目標値: '',
-  タイミング: '',
-  対象: '',
-  射程: '',
-  コスト: '',
-  制限: '',
-  効果: '',
+  HP: '',
+  攻撃: '',
+  武器: '',
+  炎熱: '',
+  衝撃: '',
+  体内: '',
+  筋力: '',
+  反射: '',
+  感覚: '',
+  知力: '',
+  精神: '',
+  共感: '',
+  行動: '',
+  移動: '',
+  備考: '',
 };
-const createMock = (): ArmieAbility => ({ ...mockBase, id: nanoid() });
-const mock: ArmieAbility[] = rangeArray(1).map(createMock);
 
-function ArmieAbilityTable() {
-  const [items, setItems] = useState<ArmieAbility[]>(mock);
-  const [abbr, setAbbr] = useState<boolean>(true);
-  const render = useRender(setItems);
+function ArmieBaseTable() {
+  const [data, setData] = useState(mockBase);
   return (
-    <AnimateHeight>
-      <div className={styles.container} {...dataFlags({ abbr })}>
-        <ControlButtons setter={setItems} initialize={createMock} abbr={{ value: abbr, setter: setAbbr }} />
-        <HeadRow titles={Object.keys(mockBase).slice(1, -1)} tag="li">
-          {(items) => <ol className={styles.titles}>{items}</ol>}
-        </HeadRow>
-        <SortableListTable items={items} setter={setItems} render={render} />
+    <div className={styles.container}>
+      <HeadRow tag="li" titles={Object.keys(data).slice(1, -1)}>
+        {(children) => <ol className={styles.titles}>{children}</ol>}
+      </HeadRow>
+      <div className={styles['content-wrap']}>
+        <div className={styles.content}>
+          {typedEntries(data)
+            .slice(1, -1)
+            .map(([key, value]) => (
+              <input key={key} value={value} onChange={createObjectOnChange(setData, key, asIs)} />
+            ))}
+        </div>
+        <div />
       </div>
-    </AnimateHeight>
+    </div>
   );
 }
-
-const useRender: UseRender<ArmieAbility> = (setter) => useCallback((item, index) => <div></div>, []);

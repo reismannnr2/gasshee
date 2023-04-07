@@ -18,3 +18,13 @@ export function createListOnChange<T, K extends keyof T>(
     });
   };
 }
+
+export function createObjectOnChange<T, K extends keyof T>(
+  setter: Dispatch<SetStateAction<T>>,
+  key: K,
+  transform: (value: string) => T[K],
+) {
+  return function onChange(evt: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+    setter((prev) => ({ ...prev, [key]: transform(evt.target.value) }));
+  };
+}

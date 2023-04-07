@@ -18,7 +18,7 @@ export default function HTMLEditor() {
         EDIT
       </button>
       <div dangerouslySetInnerHTML={{ __html }} />
-      <EditDialog html={__html} dialogRef={ref} onClose={onClose} />
+      <EditDialog dialogRef={ref} html={__html} onClose={onClose} />
     </div>
   );
 }

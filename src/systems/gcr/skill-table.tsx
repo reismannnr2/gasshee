@@ -46,7 +46,7 @@ export default function SkillTable() {
       <table className={styles.table}>
         <tbody>
           {typedEntries(skillSet).map(([stat, skills]) => (
-            <Column key={stat} stat={stat} skills={skills} onChange={onColumnChange} />
+            <Column key={stat} skills={skills} stat={stat} onChange={onColumnChange} />
           ))}
         </tbody>
       </table>
@@ -92,7 +92,7 @@ const Column = memo(function Column({ stat, skills, onChange }: ColumnProps) {
     <tr>
       <th>{stat}</th>
       {skills.map((skill, index) => (
-        <Row key={skill.id} skill={skill} index={index} onChange={onRowChange} />
+        <Row key={skill.id} index={index} skill={skill} onChange={onRowChange} />
       ))}
       <td>
         <div className={styles.controllers}>
@@ -121,7 +121,7 @@ const Row = memo(function Row({ skill, index, onChange }: RowProps) {
   return (
     <td>
       <div className={styles['row-content']}>
-        <input value={skill.名称} readOnly={skill.fixed} onChange={onNameChange} />
+        <input readOnly={skill.fixed} value={skill.名称} onChange={onNameChange} />
         <LevelSelect level={skill.LV} onChange={onLevelChange} />
       </div>
     </td>
@@ -140,7 +140,7 @@ const LevelSelect = memo(function LevelSelect({ level, onChange }: LevelSelectPr
         const selected = level === v + 1;
         return (
           <li key={v} className={clsx({ selected })}>
-            <button type="button" onClick={() => onChange(v + 1)} disabled={selected}>
+            <button disabled={selected} type="button" onClick={() => onChange(v + 1)}>
               {v + 1}
             </button>
           </li>

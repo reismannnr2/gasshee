@@ -11,5 +11,6 @@
 }
 
 .grab {
+  composes: grab from global;
   text-align: center;
 }

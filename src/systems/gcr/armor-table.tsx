@@ -51,8 +51,8 @@ export default function ArmorTable() {
   const [items, setItems] = useState<Armor[]>(mock);
   return (
     <AnimateHeight>
-      <ControlButtons setter={setItems} initialize={createMock} />
-      <HeadRow titles={Object.keys(mockBase).slice(2)} tag="li">
+      <ControlButtons initialize={createMock} setter={setItems} />
+      <HeadRow tag="li" titles={Object.keys(mockBase).slice(2)}>
         {(children) => (
           <ol className={styles.titles}>
             <li />
@@ -60,7 +60,7 @@ export default function ArmorTable() {
           </ol>
         )}
       </HeadRow>
-      <SortableListTable items={items} setter={setItems} render={useRender(setItems)} />
+      <SortableListTable items={items} render={useRender(setItems)} setter={setItems} />
     </AnimateHeight>
   );
 }
