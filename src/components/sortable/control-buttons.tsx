@@ -26,7 +26,9 @@ export default function ControlButtons<T extends { id: string }>({ setter, initi
             if (!last) {
               return prev;
             }
-            const hasData = typedEntries(last).some(([key, value]) => key !== 'id' && value);
+            const hasData = typedEntries(last).some(
+              ([key, value]) => key !== 'id' && typeof value !== 'boolean' && value,
+            );
             if (!hasData || window.confirm('Data already exists. Would you really want to delete it?')) {
               return prev.slice(0, -1);
             }

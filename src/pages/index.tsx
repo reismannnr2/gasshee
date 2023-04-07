@@ -3,6 +3,7 @@ import NoSSR from '../components/no-ssr';
 import AbilityTable from '../systems/gcr/ability-table';
 import ArmieTable from '../systems/gcr/armie-table';
 import ArmorTable from '../systems/gcr/armor-table';
+import GrowthTable from '../systems/gcr/growth-table';
 import MagicTable from '../systems/gcr/magic-table';
 import SkillModificationTable from '../systems/gcr/skill-modification-table';
 import SkillTable from '../systems/gcr/skill-table';
@@ -34,6 +35,9 @@ export default function Home() {
           </section>
           <section>
             <ArmieTable />
+          </section>
+          <section>
+            <GrowthTable />
           </section>
           <section>Hoge</section>
           <div id="test" />
