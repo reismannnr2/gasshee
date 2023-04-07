@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "hcm": "hcm",
-    "export ": "next build && next export -o docs && touch docs/.nojekyll"
+    "export": "rm -rf ./doc && next build && next export -o docs && touch docs/.nojekyll"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.0.8",
