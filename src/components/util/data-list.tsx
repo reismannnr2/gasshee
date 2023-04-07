@@ -6,7 +6,7 @@ export interface Props {
 export default function DataList({ id, items }: Props) {
   return (
     <datalist id={id}>
-      <option value="" />
+      <option aria-label="empty" value="" />
       {items.map(
         (value) =>
           value && (

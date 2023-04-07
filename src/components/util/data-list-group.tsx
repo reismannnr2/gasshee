@@ -6,7 +6,7 @@ export interface Props {
 export function DataListGroup({ id, items }: Props) {
   return (
     <datalist id={id}>
-      <option value="" />
+      <option aria-label="empty" value="" />
       {items.map(([group, values]) => (
         <optgroup key={group} label={group}>
           {values.map(

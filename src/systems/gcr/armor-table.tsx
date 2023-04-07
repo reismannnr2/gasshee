@@ -69,7 +69,7 @@ const useRender: UseRender<Armor> = (setter) =>
   useCallback(
     (item, index) => (
       <div className={styles.content}>
-        <input type="checkbox" />
+        <input aria-label="適用" type="checkbox" />
         <input type="text" value={item.名称} onChange={createListOnChange(setter, index, '名称', asIs)} />
         <input type="text" value={item.種別} onChange={createListOnChange(setter, index, '種別', asIs)} />
         <input type="text" value={item.重さ} onChange={createListOnChange(setter, index, '重さ', asIs)} />
