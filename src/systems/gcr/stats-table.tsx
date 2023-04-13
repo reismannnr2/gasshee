@@ -56,7 +56,16 @@ export default function StatsTable() {
     </div>
   );
 }
-
+const statsList: [string, Stats, boolean, boolean][] = [
+  ['ワークス', baseStats, true, false],
+  ['初期ボーナス', emptyStats, false, false],
+  ['成長', emptyStats, false, false],
+  ['その他', emptyStats, false, false],
+  ['基本値', baseStats, true, true],
+  ['スタイル', baseStats, true, false],
+  ['その他', emptyStats, false, false],
+  ['計', baseStats, true, true],
+];
 function BaseStatTable() {
   return (
     <table className={styles['base-table']}>
@@ -72,14 +81,9 @@ function BaseStatTable() {
         </tr>
       </thead>
       <tbody>
-        <StatsRow readonly init={baseStats} title="ワークス" />
-        <StatsRow init={emptyStats} title="初期ボーナス" />
-        <StatsRow init={emptyStats} title="成長" />
-        <StatsRow init={emptyStats} title="その他" />
-        <StatsRow readonly summary init={baseStats} title="基本値" />
-        <StatsRow readonly init={baseStats} title="スタイル" />
-        <StatsRow init={emptyStats} title="その他" />
-        <StatsRow readonly summary init={baseStats} title="計" />
+        {statsList.map(([title, init, readonly, summary]) => (
+          <StatsRow key={title} init={init} readonly={readonly} summary={summary} title={title} />
+        ))}
       </tbody>
     </table>
   );
@@ -122,6 +126,15 @@ function StatsRow({
   );
 }
 
+const subStats: [string, SubStats, boolean, boolean][] = [
+  ['ワークス', baseSubStats, true, false],
+  ['スタイル', baseSubStats, true, false],
+  ['ベース値', emptySubStats, false, false],
+  ['その他', emptySubStats, false, false],
+  ['基本値', baseSubStats, true, true],
+  ['計', baseSubStats, true, true],
+];
+
 // table for Substats just like BaseStatTable
 function SubStatsTable() {
   return (
@@ -138,12 +151,9 @@ function SubStatsTable() {
         </tr>
       </thead>
       <tbody>
-        <SubStatsRow readonly init={baseSubStats} title="ワークス" />
-        <SubStatsRow readonly init={baseSubStats} title="スタイル" />
-        <SubStatsRow init={emptySubStats} title="ベース値" />
-        <SubStatsRow init={emptySubStats} title="その他" />
-        <SubStatsRow readonly summary init={baseSubStats} title="基本値" />
-        <SubStatsRow readonly summary init={baseSubStats} title="計" />
+        {subStats.map(([title, init, readonly, summary]) => (
+          <SubStatsRow key={title} init={init} readonly={readonly} summary={summary} title={title} />
+        ))}
       </tbody>
     </table>
   );

@@ -1,0 +1,42 @@
+.container {
+  font-size: 0.75rem;
+
+  .content {
+    display: grid;
+    grid-template-columns: 1fr 3rem 6.5rem 4.5rem 6.5rem 4rem 8rem 4.5rem 4.5rem 2.5rem 5rem 4.5rem 8rem;
+    font-size: 0.75rem;
+    list-style-type: none;
+    border-bottom: 1px dotted #666;
+
+    & > input {
+      width: 100%;
+      padding: 0 0.25rem;
+      text-align: center;
+      border-right: 1px dotted #666;
+    }
+  }
+
+  &[data-abbr] {
+    .detail {
+      display: none;
+    }
+
+    .content {
+      border-bottom: none;
+    }
+  }
+}
+
+.titles {
+  display: grid;
+  grid-template-columns: 1fr 3rem 6.5rem 4.5rem 6.5rem 4rem 8rem 4.5rem 4.5rem 2.5rem 5rem 4.5rem 8rem;
+  font-size: 0.75rem;
+  list-style-type: none;
+}
+
+.text {
+  width: 100%;
+  padding: 0 0.25rem;
+  resize: none;
+  border-right: 1px dotted #666;
+}
