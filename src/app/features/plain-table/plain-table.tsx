@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { Setter } from '../../common/types';
-import UserInput, { InputDef } from '../input/user-input';
+import UserInput, { InputDef } from '../user-input/user-input';
 import styles from './plain-table.module.scss';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

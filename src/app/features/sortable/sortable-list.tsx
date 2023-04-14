@@ -6,7 +6,7 @@ import { customFlags, maybe } from '../../common/functions/react-util';
 import { typedEntries } from '../../common/functions/strictly-typed';
 import { Setter } from '../../common/types';
 import { useAnimateHeight } from '../animation/use-animate-height';
-import UserInput, { InputDef } from '../input/user-input';
+import UserInput, { InputDef } from '../user-input/user-input';
 import Controller from './controller';
 import styles from './simple-table-list.module.scss';
 import SortableListBase from './sortable-list-base';
@@ -78,16 +78,7 @@ function useRenderItem<T extends { id: string }>({
                   def={def}
                   item={item}
                   setter={(transform) =>
-                    setter((prev) => {
-                      const item = prev[index];
-                      if (!item) {
-                        return prev;
-                      }
-                      const next = prev.slice();
-                      const nextItem = transform(item);
-                      next[index] = nextItem;
-                      return next;
-                    })
+                    setter((prev) => prev.map((item, i) => (i === index ? transform(item) : item)))
                   }
                 />
               </li>
@@ -143,15 +134,7 @@ function createOnChange<T extends { id: string; [k: string]: string }>(
   key: keyof T,
 ) {
   return (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setter((prev) => {
-      const next = prev.slice();
-      const item = prev[index];
-      if (!item) {
-        return prev;
-      }
-      next[index] = { ...item, [key]: e.target.value };
-      return next;
-    });
+    setter((prev) => prev.map((item, i) => (i === index ? { ...item, [key]: e.target.value } : item)));
   };
 }
 
