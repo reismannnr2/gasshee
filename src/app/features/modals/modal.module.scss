@@ -1,0 +1,9 @@
+.modal {
+  margin: auto;
+  background: transparent;
+  border: none;
+
+  &::backdrop {
+    background-color: rgb(0 0 0 / 50%);
+  }
+}

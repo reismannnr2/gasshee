@@ -10,5 +10,14 @@
   },
   "specs": {
     ".tsx$": "@markuplint/react-spec"
-  }
+  },
+  "nodeRules": [
+    {
+      "selector": "head",
+      "rules": {
+        "permitted-contents": false,
+        "required-element": false
+      }
+    }
+  ]
 }

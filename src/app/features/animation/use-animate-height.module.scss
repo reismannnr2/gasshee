@@ -1,0 +1,9 @@
+.animate-height {
+  height: auto;
+  overflow: hidden;
+  transition: height 0.2s ease;
+
+  &:has([data-dragging]) {
+    overflow: visible;
+  }
+}

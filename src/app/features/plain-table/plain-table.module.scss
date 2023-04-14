@@ -1,0 +1,13 @@
+.table {
+  font-size: 0.75rem;
+  border-collapse: collapse;
+  border: 1px dotted #666;
+
+  & th,
+  & td {
+    font-weight: 400;
+    text-align: center;
+    cursor: default;
+    border: 1px dotted #666;
+  }
+}
