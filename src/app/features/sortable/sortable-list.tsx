@@ -1,43 +1,46 @@
 import clsx from 'clsx';
-import { ChangeEvent, useCallback, useState } from 'react';
+import { useState } from 'react';
 import Maybe from '../../common/components/maybe';
 import MaybeWith from '../../common/components/maybe-with';
-import { customFlags, maybe } from '../../common/functions/react-util';
+import { customFlags, genericMemo, maybe } from '../../common/functions/react-util';
 import { typedEntries } from '../../common/functions/strictly-typed';
 import { Setter } from '../../common/types';
 import { useAnimateHeight } from '../animation/use-animate-height';
 import UserInput, { InputDef } from '../user-input/user-input';
 import Controller from './controller';
-import styles from './simple-table-list.module.scss';
-import SortableListBase from './sortable-list-base';
-import { RenderSortableItem } from './types';
+import SortableListBase, { DragHandle } from './sortable-list-base';
+import styles from './sortable-list.module.scss';
 
-export type Props<T extends { id: string }> = {
-  defs: InputDef<T>[];
+export type Props<T extends { id: string }, Ex> = {
+  defs: InputDef<T, Ex>[];
   grids: string;
+  setter: Setter<T[]>;
+  items: T[];
   initialize: () => T;
   detailsKey?: keyof T;
   unchecked?: string[];
   disableSort?: boolean;
+  ex: Ex;
 };
 
-export default function SortableList<T extends { id: string }>({
+export default function SortableList<T extends { id: string }, I>({
   defs,
   grids,
   initialize,
+  setter,
+  items,
   detailsKey,
   unchecked,
   disableSort,
-}: Props<T>) {
-  const [items, setter] = useState<T[]>(() => [initialize()]);
+  ex,
+}: Props<T, I>) {
   const [abbreviated, setAbbreviated] = useState(false);
   const abbreviate = maybe(detailsKey, {
     value: abbreviated,
     setter: setAbbreviated,
   });
-  const { innerRef, outerRef, className: animate } = useAnimateHeight();
+  const { innerRef, outerRef, className: animate } = useAnimateHeight(2);
   const confirm = shouldConfirmToDelete(items, unchecked);
-  const renderItem = useRenderItem({ defs, grids, setter, detailsKey });
 
   return (
     <div className={styles['simple-table-list']}>
@@ -45,75 +48,84 @@ export default function SortableList<T extends { id: string }>({
       <div ref={outerRef} className={clsx(styles.table, animate)}>
         <div ref={innerRef} {...customFlags({ abbreviated })}>
           <HeadRow grids={grids} titles={defs.map((def) => def.title)} />
-          <SortableListBase disableSort={disableSort} items={items} renderItem={renderItem} setter={setter} />
+          <SortableListBase disableSort={disableSort} items={items} setter={setter}>
+            {(item, drag, setter) => (
+              <Row
+                key={item.id}
+                defs={defs}
+                detailsKey={detailsKey}
+                disableSort={disableSort}
+                drag={drag}
+                ex={ex}
+                grids={grids}
+                item={item}
+                setter={setter}
+              />
+            )}
+          </SortableListBase>
         </div>
       </div>
     </div>
   );
 }
 
-type RenderItemArgs<T> = {
-  defs: InputDef<T>[];
-  grids: string;
-  setter: Setter<T[]>;
-  detailsKey?: keyof T;
+type RowProps<T extends { id: string }, Ex> = {
+  defs: InputDef<T, Ex>[];
   disableSort?: boolean;
+  setter: Setter<T>;
+  item: T;
+  grids: string;
+  detailsKey?: keyof T;
+  drag: DragHandle;
+  ex: Ex;
 };
 
-function useRenderItem<T extends { id: string }>({
+const Row = genericMemo(function Row<T extends { id: string }, Ex>({
   defs,
-  grids,
-  setter,
-  detailsKey,
   disableSort,
-}: RenderItemArgs<T>): RenderSortableItem<T> {
-  return useCallback(
-    (item, index, dragHandle) => (
-      <div className={styles['content-container']}>
-        <div className={styles.content}>
-          <ul className={clsx(styles['content-list'], grids)}>
-            {defs.map((def) => (
-              <li key={def.title}>
-                <UserInput
-                  def={def}
-                  item={item}
-                  setter={(transform) =>
-                    setter((prev) => prev.map((item, i) => (i === index ? transform(item) : item)))
-                  }
-                />
-              </li>
-            ))}
-          </ul>
-          {
-            <MaybeWith test={detailsKey}>
-              {(key) => (
-                <div className={styles.details}>
-                  <textarea
-                    data-key={key}
-                    rows={3}
-                    value={String(item[key])}
-                    onChange={createOnChange(setter, index, key)}
-                  />
-                </div>
-              )}
-            </MaybeWith>
-          }
-        </div>
-        <div className={styles['handle-container']}>
-          {dragHandle((ref, attributes, listeners) => (
-            <Maybe test={!disableSort}>
-              <button ref={ref} type="button" {...attributes} {...listeners}>
-                {disableSort ? '' : '::'}
-              </button>
-            </Maybe>
+  setter,
+  item,
+  grids,
+  detailsKey,
+  drag,
+  ex,
+}: RowProps<T, Ex>) {
+  return (
+    <div className={styles['content-container']}>
+      <div className={styles.content}>
+        <ul className={clsx(styles['content-list'], grids)}>
+          {defs.map((def) => (
+            <li key={def.title}>
+              <UserInput def={def} ex={ex} item={item} setter={setter} />
+            </li>
           ))}
-        </div>
-        <div className={styles['dragging-border']} />
+        </ul>
+        {
+          <MaybeWith test={detailsKey}>
+            {(key) => (
+              <div className={styles.details}>
+                <textarea
+                  data-key={key}
+                  rows={3}
+                  value={String(item[key])}
+                  onChange={(e) => setter((prev) => ({ ...prev, [key]: e.target.value }))}
+                />
+              </div>
+            )}
+          </MaybeWith>
+        }
       </div>
-    ),
-    [setter, defs, detailsKey, grids, disableSort],
+      <div className={styles['handle-container']}>
+        <Maybe test={!disableSort}>
+          <button ref={drag.ref} type="button" {...drag.attributes} {...drag.listeners}>
+            {disableSort ? '' : '::'}
+          </button>
+        </Maybe>
+      </div>
+      <div className={styles['dragging-border']} />
+    </div>
   );
-}
+});
 
 function HeadRow({ grids, titles }: { grids: string; titles: string[] }) {
   return (
@@ -126,16 +138,6 @@ function HeadRow({ grids, titles }: { grids: string; titles: string[] }) {
       <div />
     </div>
   );
-}
-
-function createOnChange<T extends { id: string; [k: string]: string }>(
-  setter: Setter<T[]>,
-  index: number,
-  key: keyof T,
-) {
-  return (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setter((prev) => prev.map((item, i) => (i === index ? { ...item, [key]: e.target.value } : item)));
-  };
 }
 
 function shouldConfirmToDelete<T>(items: T[], unchecked: string[] = []) {

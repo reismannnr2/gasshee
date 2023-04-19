@@ -18,6 +18,12 @@
         "permitted-contents": false,
         "required-element": false
       }
+    },
+    {
+      "selector": "input",
+      "rules": {
+        "no-refer-to-non-existent-id": false
+      }
     }
   ]
 }

@@ -2,6 +2,7 @@ import {
   closestCenter,
   DndContext,
   DragEndEvent,
+  DraggableAttributes,
   KeyboardSensor,
   PointerSensor,
   useSensor,
@@ -15,11 +16,18 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
+import { rangeArray } from '../../common/functions/generate-fns';
 import { customFlags, genericMemo, maybe } from '../../common/functions/react-util';
 import { Setter } from '../../common/types';
 import styles from './sortable-list-base.module.scss';
-import { RenderSortableItem } from './types';
+
+type Listeners = ReturnType<typeof useSortable>['listeners'];
+export type DragHandle = {
+  ref: (e: HTMLElement | null) => void;
+  attributes: DraggableAttributes;
+  listeners: Listeners;
+};
 
 type ContextProps<T extends { id: string }> = {
   items: T[];
@@ -44,16 +52,11 @@ function Context<T extends { id: string }>({ items, children, onDragEnd }: Conte
 export type Props<T extends { id: string }> = {
   items: T[];
   setter: Setter<T[]>;
-  renderItem: RenderSortableItem<T>;
+  children: (item: T, drag: DragHandle, setter: Setter<T>) => React.ReactNode;
   disableSort?: boolean;
 };
 
-export default function SortableListBase<T extends { id: string }>({
-  items,
-  setter,
-  renderItem,
-  disableSort,
-}: Props<T>) {
+export default function SortableListBase<T extends { id: string }>({ items, setter, children, disableSort }: Props<T>) {
   const onDragEnd = useCallback(
     (event: DragEndEvent) => {
       const { active, over } = event;
@@ -68,12 +71,28 @@ export default function SortableListBase<T extends { id: string }>({
     },
     [setter],
   );
+  const setters = useMemo(
+    () =>
+      rangeArray(items.length).map(
+        (index): Setter<T> =>
+          (transform) =>
+            setter((prev) => prev.map((item, i) => (i === index ? transform(item) : item))),
+      ),
+    [setter, items.length],
+  );
 
   return (
     <Context items={items} onDragEnd={onDragEnd}>
       <ol className={styles.list}>
         {items.map((item, index) => (
-          <Row key={item.id} disableSort={disableSort} index={index} item={item} renderItem={renderItem} />
+          <Row
+            key={item.id}
+            disableSort={disableSort}
+            item={item}
+            renderItem={children}
+            // items.length をチェックしてからmapしているので、setters[index]は必ず存在する
+            setter={setters[index] as Setter<T>}
+          />
         ))}
       </ol>
     </Context>
@@ -82,12 +101,12 @@ export default function SortableListBase<T extends { id: string }>({
 
 interface RowProps<T extends { id: string }> {
   item: T;
-  index: number;
-  renderItem: RenderSortableItem<T>;
+  renderItem: (item: T, drag: DragHandle, setter: Setter<T>) => React.ReactNode;
   disableSort?: boolean;
+  setter: Setter<T>;
 }
 
-const Row = genericMemo(function Row<T extends { id: string }>({ item, index, renderItem, disableSort }: RowProps<T>) {
+const Row = genericMemo(function Row<T extends { id: string }>({ item, renderItem, disableSort, setter }: RowProps<T>) {
   const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } = useSortable({
     id: item.id,
   });
@@ -102,7 +121,7 @@ const Row = genericMemo(function Row<T extends { id: string }>({ item, index, re
       style={maybe(!disableSort, style)}
       {...customFlags({ dragging: isDragging })}
     >
-      {renderItem(item, index, (f) => f(setActivatorNodeRef, attributes, listeners))}
+      {renderItem(item, { ref: setActivatorNodeRef, attributes, listeners }, setter)}
     </li>
   );
 });

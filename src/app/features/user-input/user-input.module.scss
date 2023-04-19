@@ -1,5 +1,10 @@
 .input {
   display: inline-block;
   width: 100%;
+  height: 100%;
   padding: 0 0.25rem;
+}
+
+.read-only {
+  cursor: default;
 }

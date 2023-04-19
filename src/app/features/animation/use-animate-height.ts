@@ -7,10 +7,9 @@ export type AnimateHeight<I, O> = {
   className: string;
 };
 
-export function useAnimateHeight<
-  I extends HTMLElement = HTMLDivElement,
-  O extends HTMLElement = HTMLDivElement,
->(): AnimateHeight<I, O> {
+export function useAnimateHeight<I extends HTMLElement = HTMLDivElement, O extends HTMLElement = HTMLDivElement>(
+  extraHeight = 0,
+): AnimateHeight<I, O> {
   const innerRef = useRef<I>(null);
   const outerRef = useRef<O>(null);
   const heightRef = useRef(0);
@@ -27,7 +26,7 @@ export function useAnimateHeight<
           heightRef.current = next;
           const outer = outerRef.current;
           if (outer) {
-            outer.style.height = `${next}px`;
+            outer.style.height = `${next + extraHeight}px`;
           }
         }
       }),
@@ -41,12 +40,12 @@ export function useAnimateHeight<
     }
     const next = inner.getBoundingClientRect().height;
     heightRef.current = next;
-    outer.style.height = `${next}px`;
+    outer.style.height = `${next + extraHeight}px`;
     observer.observe(inner, { subtree: true, attributes: true, childList: true, characterData: true });
     return () => {
       observer.disconnect();
     };
-  }, [observer]);
+  }, [observer, extraHeight]);
   const className = styles['animate-height'];
   return { innerRef, outerRef, className };
 }
