@@ -1,5 +1,6 @@
 import { Fragment } from 'react';
-import { STAT_NAMES, useSkillSetValue } from './states/skill-set';
+import { STAT_NAMES } from './states/stats';
+import { useSkillSetValue } from './states/skill-set';
 
 export default function DataList() {
   return (

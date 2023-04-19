@@ -4,7 +4,8 @@ import { Setter } from '../../common/types';
 import { InputDef } from '../../features/user-input/user-input';
 import VerticalTable, { ColumnDef } from '../../features/vertical-table/vertical-table';
 import styles from './skill-table.module.scss';
-import { STAT_NAMES, SkillItem, SkillSet, useSkillSetValue, useUpdateSkillSet } from './states/skill-set';
+import { SkillItem, SkillSet, useSkillSetValue, useUpdateSkillSet } from './states/skill-set';
+import { STAT_NAMES } from './states/stats';
 
 export default function SkillTable() {
   const item = useSkillSetValue();

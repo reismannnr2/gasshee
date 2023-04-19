@@ -4,31 +4,33 @@ import UserInput, { InputDef } from '../user-input/user-input';
 import styles from './plain-table.module.scss';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type Props<S, R extends Array<RowDef<S, any>>> = {
+export type Props<S, R extends Array<RowDef<S, any, Ex>>, Ex> = {
   title: string;
-  titles: string[];
+  titles: readonly string[];
   layout?: string;
   rows: R;
   item: S;
   setter: Setter<S>;
+  ex: Ex;
 };
 
-export type RowDef<S, T> = {
+export type RowDef<S, T, Ex> = {
   title: string;
-  defs: InputDef<T>[];
-  from: (state: S) => T;
-  to: (state: S, value: T) => S;
+  defs: InputDef<T, Ex>[];
+  from: (state: S, ex: Ex) => T;
+  to: (state: S, value: T, ex: Ex) => S;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function PlainTable<S, R extends RowDef<S, any>[]>({
+export default function PlainTable<S, R extends RowDef<S, any, Ex>[], Ex>({
   title,
   titles,
   layout,
   rows,
   item,
   setter,
-}: Props<S, R>) {
+  ex,
+}: Props<S, R, Ex>) {
   return (
     <table className={clsx(styles.table, layout)} title={title}>
       <thead>
@@ -47,8 +49,9 @@ export default function PlainTable<S, R extends RowDef<S, any>[]>({
               <td key={def.title}>
                 <UserInput
                   def={def}
-                  item={row.from(item)}
-                  setter={(transform) => setter((prev) => row.to(prev, transform(row.from(prev))))}
+                  ex={ex}
+                  item={row.from(item, ex)}
+                  setter={(transform) => setter((prev) => row.to(prev, transform(row.from(prev, ex)), ex))}
                 />
               </td>
             ))}
