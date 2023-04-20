@@ -1,43 +1,43 @@
-import { useEffect, useRef } from 'react';
+import { ChangeEvent, useEffect, useRef } from 'react';
 import { debounced } from '../../common/functions/generate-fns';
 import { genericMemo } from '../../common/functions/react-util';
-import { Setter } from '../../common/types';
 import styles from './user-input.module.scss';
 
-type InputDefImpl<T, Ex> =
-  | NumberInputDef<T, Ex>
-  | TextInputDef<T, Ex>
-  | CustomInputDef<T, Ex>
-  | ReadonlyInputDef<T, Ex>
+type InputDefImpl<From, To> =
+  | NumberInputDef<From, To>
+  | TextInputDef<From, To>
+  | CustomInputDef<From, To>
+  | ReadonlyInputDef<From>
   | EmptyDef;
-type InputDefGenerate<T, Ex> = {
-  fn: (item: T, ex: Ex) => InputDefImpl<T, Ex>;
+
+type InputDefGenerate<From, To> = {
   title: string;
-};
-export type InputDef<T, Ex> = InputDefImpl<T, Ex> | InputDefGenerate<T, Ex>;
-
-export type Props<T, Ex> = {
-  def: InputDef<T, Ex>;
-  item: T;
-  setter: Setter<T>;
-  ex: Ex;
+  fn: (from: From) => InputDefImpl<From, To>;
 };
 
-function isGenerate<T, Ex>(def: InputDef<T, Ex>): def is InputDefGenerate<T, Ex> {
+export type InputDef<From, To> = InputDefImpl<From, To> | InputDefGenerate<From, To>;
+
+function isGenerate<From, To>(def: InputDef<From, To>): def is InputDefGenerate<From, To> {
   return 'fn' in def;
 }
 
-const UserInput = genericMemo(function UserInput<T, Ex>({ def, item, setter, ex }: Props<T, Ex>) {
-  const actualDef = isGenerate(def) ? def.fn(item, ex) : def;
+export type Props<From, To> = {
+  def: InputDef<From, To>;
+  from: From;
+  to: To;
+};
+
+const UserInput = genericMemo(function UserInput<From, To>({ def, from, to }: Props<From, To>) {
+  const actualDef = isGenerate(def) ? def.fn(from) : def;
   switch (actualDef.type) {
     case 'number':
-      return <NumberInput def={actualDef} ex={ex} item={item} setter={setter} />;
+      return <NumberInput def={actualDef} from={from} to={to} />;
     case 'text':
-      return <TextInput def={actualDef} ex={ex} item={item} setter={setter} />;
+      return <TextInput def={actualDef} from={from} to={to} />;
     case 'custom':
-      return <CustomInput def={actualDef} ex={ex} item={item} setter={setter} />;
-    case 'readonly':
-      return <ReadonlyInput def={actualDef} ex={ex} item={item} />;
+      return <CustomInput def={actualDef} from={from} to={to} />;
+    case 'read-only':
+      return <ReadonlyInput def={actualDef} from={from} />;
     case 'empty':
       return <EmptyInput def={actualDef} />;
   }
@@ -45,62 +45,22 @@ const UserInput = genericMemo(function UserInput<T, Ex>({ def, item, setter, ex 
 
 export default UserInput;
 
-type NumberInputDef<T, Ex> = {
-  type: 'number';
-  title: string;
-  from: (state: T, ex: Ex) => string;
-  to: (prev: T, value: number, ex: Ex) => T;
-  inputProps?: Partial<JSX.IntrinsicElements['input']>;
-};
-
-type NumberInputProps<T, Ex> = {
-  item: T;
-  def: NumberInputDef<T, Ex>;
-  setter: Setter<T>;
-  ex: Ex;
-};
-
-function NumberInput<T, Ex>({ item, def, setter, ex }: NumberInputProps<T, Ex>) {
-  const ref = useRef<HTMLInputElement>(null);
-  const value = def.from(item, ex);
-  useEffect(() => {
-    const n = Number(value);
-    if (ref.current && Number(ref.current.value) !== n) {
-      ref.current.value = String(value);
-    }
-  }, [value]);
-  return (
-    <input
-      ref={ref}
-      className={styles.input}
-      data-title={def.title}
-      defaultValue={def.from(item, ex)}
-      onChange={debounced((e) => {
-        const n = Number(e.target.value);
-        setter((prev) => def.to(prev, n, ex));
-      }, 500)}
-      {...def.inputProps}
-    />
-  );
-}
-
-type TextInputDef<T, Ex> = {
+type TextInputDef<From, To> = {
   type: 'text';
   title: string;
-  from: (state: T, ex: Ex) => string;
-  to: (prev: T, value: string, ex: Ex) => T;
+  from: (source: From) => string;
+  to: (to: To, value: string) => void;
   inputProps?: Partial<JSX.IntrinsicElements['input']>;
 };
 
-type TextInputProps<T, Ex> = {
-  item: T;
-  def: TextInputDef<T, Ex>;
-  setter: Setter<T>;
-  ex: Ex;
+type TextInputProps<From, To> = {
+  def: TextInputDef<From, To>;
+  from: From;
+  to: To;
 };
 
-function TextInput<T, Ex>({ item, def, setter, ex }: TextInputProps<T, Ex>) {
-  const value = def.from(item, ex);
+function TextInput<From, To>({ def, from, to }: TextInputProps<From, To>) {
+  const value = def.from(from);
   const ref = useRef<HTMLInputElement>(null);
   useEffect(() => {
     if (ref.current && ref.current.value !== value) {
@@ -112,49 +72,83 @@ function TextInput<T, Ex>({ item, def, setter, ex }: TextInputProps<T, Ex>) {
       ref={ref}
       className={styles.input}
       data-title={def.title}
-      defaultValue={def.from(item, ex)}
-      onChange={debounced((e) => {
-        setter((prev) => def.to(prev, e.target.value, ex));
-      }, 500)}
-      {...def.inputProps}
+      defaultValue={value}
+      onChange={debounced((e: ChangeEvent<HTMLInputElement>) => {
+        def.to(to, e.target.value);
+      })}
     />
   );
 }
 
-type CustomInputDef<T, Ex> = {
-  type: 'custom';
+type NumberInputDef<From, To> = {
+  type: 'number';
   title: string;
-  render: (item: T, setter: Setter<T>, def: CustomInputDef<T, Ex>, ex: Ex) => React.ReactNode;
+  from: (from: From) => string;
+  to: (to: To, value: number) => void;
+  inputProps?: Partial<JSX.IntrinsicElements['input']>;
 };
 
-type CustomInputProps<T, Ex> = {
-  item: T;
-  def: CustomInputDef<T, Ex>;
-  setter: Setter<T>;
-  ex: Ex;
+type NumberInputProps<From, To> = {
+  def: NumberInputDef<From, To>;
+  from: From;
+  to: To;
 };
 
-function CustomInput<T, Ex>({ item, def, setter, ex }: CustomInputProps<T, Ex>) {
-  return <>{def.render(item, setter, def, ex)}</>;
+function NumberInput<From, To>({ def, from, to }: NumberInputProps<From, To>) {
+  const value = def.from(from);
+  const ref = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    const n = Number(value);
+    if (ref.current && Number(ref.current.value) !== n) {
+      ref.current.value = String(value);
+    }
+  }, [value]);
+  return (
+    <input
+      ref={ref}
+      className={styles.input}
+      data-title={def.title}
+      defaultValue={value}
+      onChange={debounced((e: ChangeEvent<HTMLInputElement>) => {
+        const n = Number(e.target.value);
+        def.to(to, n);
+      })}
+    />
+  );
 }
 
-type ReadonlyInputDef<T, Ex> = {
-  type: 'readonly';
+type CustomInputDef<From, To> = {
+  type: 'custom';
   title: string;
-  from: (state: T, ex: Ex) => string;
+  render: (from: From, to: To, def: CustomInputDef<From, To>) => React.ReactNode;
+};
+
+type CustomInputProps<From, To> = {
+  def: CustomInputDef<From, To>;
+  from: From;
+  to: To;
+};
+
+function CustomInput<From, To>({ def, from, to }: CustomInputProps<From, To>) {
+  return <>{def.render(from, to, def)}</>;
+}
+
+type ReadonlyInputDef<From> = {
+  type: 'read-only';
+  title: string;
+  from: (from: From) => string;
   spanProps?: Partial<JSX.IntrinsicElements['input']>;
 };
 
-type ReadonlyInputProps<T, Ex> = {
-  item: T;
-  def: ReadonlyInputDef<T, Ex>;
-  ex: Ex;
+type ReadonlyInputProps<From> = {
+  def: ReadonlyInputDef<From>;
+  from: From;
 };
 
-function ReadonlyInput<T, Ex>({ item, def, ex }: ReadonlyInputProps<T, Ex>) {
+function ReadonlyInput<From>({ def, from }: ReadonlyInputProps<From>) {
   return (
     <span className={styles['read-only']} data-title={def.title} {...def.spanProps}>
-      {def.from(item, ex)}
+      {def.from(from)}
     </span>
   );
 }

@@ -1,36 +1,24 @@
 import clsx from 'clsx';
-import { Setter } from '../../common/types';
 import UserInput, { InputDef } from '../user-input/user-input';
 import styles from './plain-table.module.scss';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type Props<S, R extends Array<RowDef<S, any, Ex>>, Ex> = {
+export type Props<From, To> = {
+  layout?: string;
   title: string;
   titles: readonly string[];
-  layout?: string;
-  rows: R;
-  item: S;
-  setter: Setter<S>;
-  ex: Ex;
+  rowDefs: readonly RowDef<From, To>[];
+  from: From;
+  to: To;
 };
 
-export type RowDef<S, T, Ex> = {
+export type RowDef<From, To> = {
   title: string;
-  defs: InputDef<T, Ex>[];
-  from: (state: S, ex: Ex) => T;
-  to: (state: S, value: T, ex: Ex) => S;
+  inputDefs: InputDef<From, To>[];
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function PlainTable<S, R extends RowDef<S, any, Ex>[], Ex>({
-  title,
-  titles,
-  layout,
-  rows,
-  item,
-  setter,
-  ex,
-}: Props<S, R, Ex>) {
+export default function PlainTable<From, To>({ layout, title, titles, rowDefs, from, to }: Props<From, To>) {
   return (
     <table className={clsx(styles.table, layout)} title={title}>
       <thead>
@@ -42,17 +30,12 @@ export default function PlainTable<S, R extends RowDef<S, any, Ex>[], Ex>({
         </tr>
       </thead>
       <tbody>
-        {rows.map((row) => (
-          <tr key={row.title}>
-            <th>{row.title}</th>
-            {row.defs.map((def) => (
+        {rowDefs.map((rowDef) => (
+          <tr key={rowDef.title}>
+            <th>{rowDef.title}</th>
+            {rowDef.inputDefs.map((def) => (
               <td key={def.title}>
-                <UserInput
-                  def={def}
-                  ex={ex}
-                  item={row.from(item, ex)}
-                  setter={(transform) => setter((prev) => row.to(prev, transform(row.from(prev, ex)), ex))}
-                />
+                <UserInput def={def} from={from} to={to} />
               </td>
             ))}
           </tr>
