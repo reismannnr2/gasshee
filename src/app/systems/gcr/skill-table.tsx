@@ -14,6 +14,7 @@ export default function SkillTable() {
     <section>
       <VerticalTable
         columns={columns}
+        ex={null}
         inputDefs={inputDefs}
         item={item}
         layout={styles.layout}
@@ -97,7 +98,7 @@ const inputDefs: InputDef<SkillItem, null>[] = [
     render: (item, setter) => <SkillLevel item={item} setter={setter} />,
   },
 ];
-const columns: ColumnDef<SkillSet, SkillItem>[] = STAT_NAMES.map((stat) => ({
+const columns: ColumnDef<SkillSet, SkillItem, null>[] = STAT_NAMES.map((stat) => ({
   title: stat,
   from: (state: SkillSet) => state[stat],
   to: (state: SkillSet, value: SkillItem[]) => ({ ...state, [stat]: value }),

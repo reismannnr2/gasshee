@@ -1,6 +1,6 @@
-import styles from './stats-table.module.scss';
 import PlainTable from '../../features/plain-table/plain-table';
 import { STAT_NAMES } from './states/stats';
+import styles from './stats-table.module.scss';
 
 export default function StatsTable() {
   return <PlainTable ex={ex} item={item} layout={layout} rows={rows} setter={setter} title={title} titles={titles} />;

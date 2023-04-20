@@ -1,0 +1,7 @@
+.layout {
+  font-size: 0.75rem;
+
+  & th:first-child {
+    display: none;
+  }
+}

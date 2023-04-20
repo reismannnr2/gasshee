@@ -7,43 +7,46 @@ import { useAnimateHeight } from '../animation/use-animate-height';
 import UserInput, { InputDef } from '../user-input/user-input';
 import styles from './vertical-table.module.scss';
 
-export type Props<S, T extends { id: string }> = {
+export type Props<S, T extends { id: string }, Ex> = {
   layout?: string;
   item: S;
   setter: Setter<S>;
-  columns: ColumnDef<S, T>[];
-  inputDefs: InputDef<T>[];
+  columns: ColumnDef<S, T, Ex>[];
+  inputDefs: InputDef<T, Ex>[];
   titleRender: (title: string, setter: Setter<T[]>) => React.ReactNode;
+  ex: Ex;
 };
 
-export default function VerticalTable<S, T extends { id: string }>({
+export default function VerticalTable<S, T extends { id: string }, Ex>({
   layout,
   item,
   setter,
   columns,
   inputDefs,
   titleRender,
-}: Props<S, T>) {
+  ex,
+}: Props<S, T, Ex>) {
   // columnsは変更されないので、useMemoでキャッシュする
   const columnsWithSetter = useMemo(
     () =>
-      columns.map((column): [ColumnDef<S, T>, Setter<T[]>] => [
+      columns.map((column): [ColumnDef<S, T, Ex>, Setter<T[]>] => [
         column,
         (transform) => {
-          setter((state) => column.to(state, transform(column.from(state))));
+          setter((state) => column.to(state, transform(column.from(state, ex)), ex));
         },
       ]),
-    [setter, columns],
+    [setter, columns, ex],
   );
   const { innerRef, outerRef, className: animate } = useAnimateHeight<HTMLUListElement, HTMLDivElement>(2);
   return (
     <div ref={outerRef} className={clsx(styles.container, animate)}>
       <ul ref={innerRef} className={clsx(layout, styles.table)}>
         {columnsWithSetter.map(([column, setter]) => (
-          <Column<T>
+          <Column<T, Ex>
             key={column.title}
+            ex={ex}
             inputDefs={inputDefs}
-            items={column.from(item)}
+            items={column.from(item, ex)}
             setter={setter}
             title={column.title}
             titleRender={titleRender}
@@ -54,27 +57,29 @@ export default function VerticalTable<S, T extends { id: string }>({
   );
 }
 
-export type ColumnDef<S, T extends { id: string }> = {
+export type ColumnDef<S, T extends { id: string }, Ex> = {
   title: string;
-  from: (state: S) => T[];
-  to: (state: S, value: T[]) => S;
+  from: (state: S, ex: Ex) => T[];
+  to: (state: S, value: T[], ex: Ex) => S;
 };
 
-type ColumnProps<T extends { id: string }> = {
+type ColumnProps<T extends { id: string }, Ex> = {
   title: string;
   items: T[];
   setter: Setter<T[]>;
-  inputDefs: InputDef<T>[];
+  inputDefs: InputDef<T, Ex>[];
   titleRender: (title: string, setter: Setter<T[]>) => React.ReactNode;
+  ex: Ex;
 };
 
-const Column = genericMemo(function Column<T extends { id: string }>({
+const Column = genericMemo(function Column<T extends { id: string }, Ex>({
   title,
   items,
   setter,
   titleRender,
   inputDefs,
-}: ColumnProps<T>) {
+  ex,
+}: ColumnProps<T, Ex>) {
   const setters: Setter<T>[] = useMemo(
     () =>
       rangeArray(items.length).map(
@@ -88,26 +93,27 @@ const Column = genericMemo(function Column<T extends { id: string }>({
       <ul>
         {items.map((item, index) => (
           // items.length をチェックしてからmapしているので、setters[index]は必ず存在する
-          <Row<T> key={item.id} inputDefs={inputDefs} item={item} setter={setters[index] as Setter<T>} />
+          <Row<T, Ex> key={item.id} ex={ex} inputDefs={inputDefs} item={item} setter={setters[index] as Setter<T>} />
         ))}
       </ul>
     </li>
   );
 });
 
-type RowProps<T extends { id: string }> = {
+type RowProps<T extends { id: string }, Ex> = {
   item: T;
   setter: Setter<T>;
-  inputDefs: InputDef<T>[];
+  inputDefs: InputDef<T, Ex>[];
+  ex: Ex;
 };
 
-const Row = genericMemo(function Row<T extends { id: string }>({ item, setter, inputDefs }: RowProps<T>) {
+const Row = genericMemo(function Row<T extends { id: string }, Ex>({ item, setter, inputDefs, ex }: RowProps<T, Ex>) {
   return (
     <li>
       <ul className="inputs">
         {inputDefs.map((def, index) => (
           <li key={index}>
-            <UserInput<T> def={def} item={item} setter={setter} />
+            <UserInput<T, Ex> def={def} ex={ex} item={item} setter={setter} />
           </li>
         ))}
       </ul>

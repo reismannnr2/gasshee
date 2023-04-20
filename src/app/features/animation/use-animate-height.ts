@@ -30,7 +30,7 @@ export function useAnimateHeight<I extends HTMLElement = HTMLDivElement, O exten
           }
         }
       }),
-    [],
+    [extraHeight],
   );
   useEffect(() => {
     const inner = innerRef.current;
