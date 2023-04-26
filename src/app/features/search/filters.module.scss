@@ -1,0 +1,32 @@
+.list {
+  display: grid;
+  grid-template-columns: 10rem 10rem 10rem 10rem 1fr;
+  grid-gap: 1rem;
+  font-size: 0.75rem;
+  list-style-type: none;
+}
+
+.field {
+  display: grid;
+  grid-template-rows: auto auto;
+}
+
+.input {
+  display: inline-block;
+  width: 100%;
+  border-bottom: 1px dotted #666;
+}
+
+.select-wrapper {
+  display: inline-flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.select {
+  display: inline-block;
+  width: max-content;
+  padding: 0 0.5rem;
+  margin-right: 1rem;
+  border-bottom: 1px dotted #666;
+}
