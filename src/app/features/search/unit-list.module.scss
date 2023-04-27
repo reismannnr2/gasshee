@@ -1,0 +1,89 @@
+.table {
+  width: 100%;
+  font-size: 0.75rem;
+  table-layout: fixed;
+  border-collapse: collapse;
+  border: 1px dotted #666;
+
+  caption {
+    display: none;
+  }
+
+  th,
+  td {
+    padding: 0 0.25rem;
+    cursor: default;
+    border: 1px dotted #666;
+  }
+
+  th.id {
+    width: 15rem;
+  }
+
+  th.tags {
+    width: 20rem;
+  }
+
+  th.user {
+    width: 10rem;
+  }
+
+  th.system {
+    width: 8rem;
+  }
+
+  th.updated-at {
+    width: 8rem;
+  }
+
+  td.updated-at {
+    text-align: center;
+  }
+}
+
+.filter-link {
+  cursor: pointer;
+}
+
+.tag-list {
+  display: flex;
+  list-style-type: none;
+
+  & > li:not(:last-child) {
+    margin-right: 0.5rem;
+  }
+
+  .filter-link {
+    position: relative;
+    color: #666;
+    text-decoration: underline;
+
+    &::after {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 5;
+      color: rgb(0 0 0 / 0%);
+      content: attr(data-text);
+      mix-blend-mode: multiply;
+    }
+  }
+
+  & > li:nth-child(4n + 1) {
+    .filter-link::after {
+      color: rgb(255 0 0 / 30%);
+    }
+  }
+
+  & > li:nth-child(4n + 2) {
+    .filter-link::after {
+      color: rgb(0 255 0 / 30%);
+    }
+  }
+
+  & > li:nth-child(4n + 3) {
+    .filter-link::after {
+      color: rgb(0 0 255 / 30%);
+    }
+  }
+}
