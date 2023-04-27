@@ -1,8 +1,21 @@
 import { cdate } from 'cdate';
-import { useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { Suspense } from 'react';
+import Maybe from '../../common/components/maybe';
 import { SYSTEM_NAMES } from '../../common/text-map';
-import { freeTextAtom, systemAtom, tagAtom, useFilteredUnits } from './states';
+import {
+  freeTextAtom,
+  maxPageAtom,
+  pageAtom,
+  pagedUnitsAtom,
+  setFirstPageAtom,
+  setLastPageAtom,
+  setNextPageAtom,
+  setPageAtom,
+  setPrevPageAtom,
+  systemAtom,
+  tagAtom,
+} from './states';
 import styles from './unit-list.module.scss';
 
 export default function UnitList() {
@@ -14,12 +27,13 @@ export default function UnitList() {
 }
 
 function UnitList_() {
-  const items = useFilteredUnits();
+  const items = useAtomValue(pagedUnitsAtom);
   const setTag = useSetAtom(tagAtom);
   const setSystem = useSetAtom(systemAtom);
   const setFreeText = useSetAtom(freeTextAtom);
   return (
-    <>
+    <section>
+      <Controller />
       <table className={styles.table}>
         <caption>一覧</caption>
         <thead>
@@ -62,6 +76,58 @@ function UnitList_() {
           ))}
         </tbody>
       </table>
-    </>
+    </section>
+  );
+}
+
+function Controller() {
+  const setFirstPage = useSetAtom(setFirstPageAtom);
+  const setLastPage = useSetAtom(setLastPageAtom);
+  const currentPage = useAtomValue(pageAtom);
+  const maxPage = useAtomValue(maxPageAtom);
+  const setNextPage = useSetAtom(setNextPageAtom);
+  const setPrevPage = useSetAtom(setPrevPageAtom);
+  const setPage = useSetAtom(setPageAtom);
+  return (
+    <ol className={styles.pager}>
+      <li>
+        <a onClick={setFirstPage}>{'≪'}</a>
+      </li>
+      {
+        <Maybe test={currentPage > 1 && currentPage === maxPage}>
+          <li>
+            <a onClick={() => setPage(maxPage - 2)}>{maxPage - 2}</a>
+          </li>
+        </Maybe>
+      }
+      {
+        <Maybe test={currentPage > 1}>
+          <li>
+            <a onClick={setPrevPage}>{currentPage - 1}</a>
+          </li>
+        </Maybe>
+      }
+      <li>
+        <a className={styles.current}>{currentPage}</a>
+      </li>
+      {
+        <Maybe test={currentPage < maxPage}>
+          <li>
+            <a onClick={setNextPage}>{currentPage + 1}</a>
+          </li>
+        </Maybe>
+      }
+
+      {
+        <Maybe test={currentPage < maxPage && currentPage === 1}>
+          <li>
+            <a onClick={() => setPage(3)}>{currentPage + 2}</a>
+          </li>
+        </Maybe>
+      }
+      <li>
+        <a onClick={setLastPage}>{'≫'}</a>
+      </li>
+    </ol>
   );
 }

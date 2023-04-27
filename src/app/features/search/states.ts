@@ -11,6 +11,7 @@ export const ORDER_BY_ITEMS = [
   { id: 'updatedAt-asc', field: 'updatedAt', direction: 'asc' },
   { id: 'updatedAt-desc', field: 'updatedAt', direction: 'desc' },
 ] as const;
+const PAGE_SIZE = 200;
 
 type OrderByItem = (typeof ORDER_BY_ITEMS)[number];
 
@@ -82,6 +83,44 @@ const filteredUnitsAtom = atom(async (get) => {
   return items.sort(compareFn);
 });
 
+export const maxPageAtom = atom(async (get) => {
+  const items = await get(filteredUnitsAtom);
+  return Math.ceil(items.length / PAGE_SIZE);
+});
+export const pageAtom = atom(1);
+export const setPageAtom = atom(null, async (get, set, page: number) => {
+  const maxPage = await get(maxPageAtom);
+  if (page > 0 && page <= maxPage) {
+    set(pageAtom, page);
+  }
+});
+export const setNextPageAtom = atom(null, async (get, set) => {
+  const page = await get(pageAtom);
+  const maxPage = await get(maxPageAtom);
+  if (page < maxPage) {
+    set(pageAtom, page + 1);
+  }
+});
+export const setPrevPageAtom = atom(null, async (get, set) => {
+  const page = await get(pageAtom);
+  if (page > 1) {
+    set(pageAtom, page - 1);
+  }
+});
+export const setLastPageAtom = atom(null, async (get, set) => {
+  const maxPage = await get(maxPageAtom);
+  set(pageAtom, maxPage);
+});
+export const setFirstPageAtom = atom(null, async (get, set) => {
+  set(pageAtom, 1);
+});
+
+export const pagedUnitsAtom = atom(async (get) => {
+  const items = await get(filteredUnitsAtom);
+  const page = get(pageAtom);
+  return items.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+});
+
 export function useFilteredUnits() {
   return useAtomValue(filteredUnitsAtom);
 }
@@ -127,7 +166,6 @@ export const mockData: Data[] = [
     name: 'Example Document',
     user: 'Alice',
     tags: ['example', 'document'],
-    parole: 'password123',
     createdAt: '2022-04-01T10:00:00+09:00',
     updatedAt: '2022-04-01T12:30:00+09:00',
     content: {
@@ -152,7 +190,6 @@ export const mockData: Data[] = [
     name: 'Meeting Agenda',
     user: 'Charlie',
     tags: ['meeting', 'agenda'],
-    parole: 'password456',
     createdAt: '2022-04-03T09:00:00+09:00',
     updatedAt: '2022-04-03T10:30:00+09:00',
     content: {
@@ -166,7 +203,6 @@ export const mockData: Data[] = [
     name: 'Top Secret Plan',
     user: 'Alice',
     tags: ['top secret', 'plan'],
-    parole: 'password789',
     createdAt: '2022-04-04T14:00:00+09:00',
     updatedAt: '2022-04-04T15:30:00+09:00',
     content: '',
@@ -216,7 +252,7 @@ export const mockData: Data[] = [
     name: 'Password List',
     user: 'Eve',
     tags: ['passwords', 'list'],
-    parole: 'secret123',
+    parole: 'password123',
     createdAt: '2022-04-08T10:00:00+09:00',
     updatedAt: '2022-04-08T11:30:00+09:00',
     content: '',

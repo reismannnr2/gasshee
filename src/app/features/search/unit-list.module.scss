@@ -25,11 +25,11 @@
   }
 
   th.user {
-    width: 10rem;
+    width: 12rem;
   }
 
   th.system {
-    width: 8rem;
+    width: 12rem;
   }
 
   th.updated-at {
@@ -86,4 +86,22 @@
       color: rgb(0 0 255 / 30%);
     }
   }
+}
+
+.pager {
+  display: flex;
+  font-size: 0.75rem;
+  list-style-type: none;
+
+  > li:not(:last-child) {
+    margin-right: 0.5rem;
+  }
+
+  > li > a {
+    cursor: pointer;
+  }
+}
+
+.current {
+  text-decoration: underline;
 }
