@@ -14,12 +14,20 @@ export function customFlags(flags: { [name in string]: unknown }) {
   return result;
 }
 
-export function maybe<T, V>(test: T, value: V): V | undefined {
-  return test ? value : undefined;
+export function maybe<T, V>(test: T, value: V): V | undefined;
+export function maybe<T, V1, V2>(test: T, value: V1, fallback: V2): V1 | V2;
+export function maybe<T, V1, V2>(test: T, value: V1, fallback?: V2): V1 | V2 | undefined {
+  return test ? value : fallback;
 }
 
-export function maybeWith<T, V>(test: T | undefined | null, f: (value: T) => V): V | undefined {
-  return test != null ? f(test) : undefined;
+export function maybeWith<T, V>(test: T | undefined | null, f: (value: T) => V): V | undefined;
+export function maybeWith<T, V1, V2>(test: T | undefined | null, f: (value: T) => V1, fallback: V2): V1 | V2;
+export function maybeWith<T, V1, V2>(
+  test: T | undefined | null,
+  f: (value: T) => V1,
+  fallback?: () => V2,
+): V1 | V2 | undefined {
+  return test != null ? f(test) : fallback ? fallback() : undefined;
 }
 
 export function mergeRefs<T>(...refs: Ref<T>[]): (value: T) => void {
