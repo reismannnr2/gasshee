@@ -1,4 +1,4 @@
-import { forwardRef, memo, MutableRefObject, Ref, RefAttributes } from 'react';
+import { MutableRefObject, Ref, RefAttributes, forwardRef, memo } from 'react';
 export const genericMemo: <T>(component: T) => T = memo;
 export const genericForwardRef = forwardRef as <T, P>(
   render: (props: P, ref: Ref<T>) => React.ReactNode,

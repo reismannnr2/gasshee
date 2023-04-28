@@ -1,4 +1,4 @@
-import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { WritableAtom, atom, useAtomValue, useSetAtom } from 'jotai';
 import { doWithTransition } from '../../common/functions/react-util';
 import { Data, DataForList } from '../../common/schema';
 
@@ -31,46 +31,22 @@ export function useOrderBy(): [OrderByItem, (id: string) => void] {
   return [orderBy, setOrderBy];
 }
 
-const paroleAtom_ = atom('');
-export const paroleAtom = atom(
-  (get) => get(paroleAtom_),
-  (_get, set, parole: string) => {
-    doWithTransition(() => {
-      set(paroleAtom_, parole);
-      set(pageAtom, 1);
-    });
-  },
-);
-const tagAtom_ = atom('');
-export const tagAtom = atom(
-  (get) => get(tagAtom_),
-  (_get, set, tag: string) => {
-    doWithTransition(() => {
-      set(tagAtom_, tag);
-      set(pageAtom, 1);
-    });
-  },
-);
-const systemAtom_ = atom('');
-export const systemAtom = atom(
-  (get) => get(systemAtom_),
-  (_get, set, system: string) => {
-    doWithTransition(() => {
-      set(systemAtom_, system);
-      set(pageAtom, 1);
-    });
-  },
-);
-const freeTextAtom_ = atom('');
-export const freeTextAtom = atom(
-  (get) => get(freeTextAtom_),
-  (_get, set, freeText: string) => {
-    doWithTransition(() => {
-      set(freeTextAtom_, freeText);
-      set(pageAtom, 1);
-    });
-  },
-);
+function withPageAndTransition<T>(base: WritableAtom<T, [T], void>) {
+  return atom(
+    (get) => get(base),
+    (_get, set, value: T) => {
+      doWithTransition(() => {
+        set(base, value);
+        set(pageAtom, 1);
+      });
+    },
+  );
+}
+
+export const paroleAtom = withPageAndTransition<string>(atom(''));
+export const tagAtom = withPageAndTransition<string>(atom(''));
+export const systemAtom = withPageAndTransition<string>(atom(''));
+export const freeTextAtom = withPageAndTransition<string>(atom(''));
 
 const freeSearchAtom = atom((get) => {
   const freeText = get(freeTextAtom);
@@ -163,9 +139,22 @@ export function useFilteredUnits() {
   return useAtomValue(filteredUnitsAtom);
 }
 
-async function searchUnits(parole: string): Promise<DataForList[]> {
-  return await mock(parole);
-}
+const searchUnits = (() => {
+  let timeoutId: number | null = null;
+  async function searchUnits(parole: string): Promise<DataForList[]> {
+    return await mock(parole);
+  }
+  return async (parole: string): Promise<DataForList[]> => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    return new Promise((resolve) => {
+      timeoutId = window.setTimeout(async () => {
+        resolve(await searchUnits(parole));
+      }, 500);
+    });
+  };
+})();
 
 async function mock(parole: string): Promise<DataForList[]> {
   return new Promise((resolve) => {

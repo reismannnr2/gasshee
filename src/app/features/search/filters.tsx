@@ -20,7 +20,7 @@ export default function Filters() {
           <SortOrder />
         </li>
         <li>
-          <InputField atom={paroleAtom} debounce={500} label="合言葉" />
+          <InputField atom={paroleAtom} label="合言葉" />
         </li>
         <li>
           <InputField atom={systemAtom} label="システム" list="filter-systems" />
@@ -104,11 +104,9 @@ function InputField({
   atom: WritableAtom<string, [string], void>;
   list?: string;
   label: string;
-  debounce?: number;
 }) {
   const [value, setValue] = useAtom(atom);
   const onChange = async (e: ChangeEvent<HTMLInputElement>) => {
-    console.log('onchange', e.target.value);
     setValue(e.target.value);
   };
   return (
