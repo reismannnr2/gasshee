@@ -2,6 +2,7 @@ import { cdate } from 'cdate';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { Suspense } from 'react';
 import Maybe from '../../common/components/maybe';
+import { withTransition } from '../../common/functions/react-util';
 import { SYSTEM_NAMES } from '../../common/text-map';
 import {
   freeTextAtom,
@@ -81,20 +82,20 @@ function UnitList_() {
 }
 
 function Controller() {
-  const setFirstPage = useSetAtom(setFirstPageAtom);
-  const setLastPage = useSetAtom(setLastPageAtom);
+  const setFirstPage = withTransition(useSetAtom(setFirstPageAtom));
+  const setLastPage = withTransition(useSetAtom(setLastPageAtom));
   const currentPage = useAtomValue(pageAtom);
   const maxPage = useAtomValue(maxPageAtom);
-  const setNextPage = useSetAtom(setNextPageAtom);
-  const setPrevPage = useSetAtom(setPrevPageAtom);
-  const setPage = useSetAtom(setPageAtom);
+  const setNextPage = withTransition(useSetAtom(setNextPageAtom));
+  const setPrevPage = withTransition(useSetAtom(setPrevPageAtom));
+  const setPage = withTransition(useSetAtom(setPageAtom));
   return (
     <ol className={styles.pager}>
       <li>
         <a onClick={setFirstPage}>{'≪'}</a>
       </li>
       {
-        <Maybe test={currentPage > 1 && currentPage === maxPage}>
+        <Maybe test={currentPage > 1 && currentPage === maxPage && maxPage > 2}>
           <li>
             <a onClick={() => setPage(maxPage - 2)}>{maxPage - 2}</a>
           </li>
@@ -119,7 +120,7 @@ function Controller() {
       }
 
       {
-        <Maybe test={currentPage < maxPage && currentPage === 1}>
+        <Maybe test={currentPage < maxPage && currentPage === 1 && maxPage > 2}>
           <li>
             <a onClick={() => setPage(3)}>{currentPage + 2}</a>
           </li>

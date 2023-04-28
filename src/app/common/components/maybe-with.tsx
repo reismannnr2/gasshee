@@ -5,5 +5,5 @@ export type Props<T> = {
 };
 
 export default function MaybeWith<T>({ test, children, fallback }: Props<T>) {
-  return test != null ? <>{children(test)}</> : fallback ? fallback() : null;
+  return test != null ? <>{children(test)}</> : fallback ? <>{fallback()}</> : null;
 }

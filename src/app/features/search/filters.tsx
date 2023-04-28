@@ -1,6 +1,5 @@
 import { WritableAtom, useAtom, useAtomValue } from 'jotai';
-import { ChangeEvent, useEffect, useRef } from 'react';
-import { debounced } from '../../common/functions/generate-fns';
+import { ChangeEvent } from 'react';
 import styles from './filters.module.scss';
 import {
   ORDER_BY_ITEMS,
@@ -24,13 +23,13 @@ export default function Filters() {
           <InputField atom={paroleAtom} debounce={500} label="合言葉" />
         </li>
         <li>
-          <InputField atom={systemAtom} debounce={250} label="システム" list="filter-systems" />
+          <InputField atom={systemAtom} label="システム" list="filter-systems" />
         </li>
         <li>
-          <InputField atom={tagAtom} debounce={250} label="タグ" list="filter-tags" />
+          <InputField atom={tagAtom} label="タグ" list="filter-tags" />
         </li>
         <li>
-          <InputField atom={freeTextAtom} debounce={250} label="フリー" />
+          <InputField atom={freeTextAtom} label="フリー" />
         </li>
       </ul>
       <DataList />
@@ -64,7 +63,8 @@ function SortOrder() {
           className={styles.select}
           title="ソート順"
           value={orderBy.id}
-          onChange={(e) => {
+          onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+            console.log(e.target.value);
             setOrderBy(e.target.value);
           }}
         >
@@ -100,7 +100,6 @@ function InputField({
   label,
   atom,
   list,
-  debounce,
 }: {
   atom: WritableAtom<string, [string], void>;
   list?: string;
@@ -108,25 +107,14 @@ function InputField({
   debounce?: number;
 }) {
   const [value, setValue] = useAtom(atom);
-  const ref = useRef<HTMLInputElement>(null);
-  useEffect(() => {
-    if (ref.current && ref.current.value !== value) {
-      ref.current.value = value;
-    }
-  }, [value]);
+  const onChange = async (e: ChangeEvent<HTMLInputElement>) => {
+    console.log('onchange', e.target.value);
+    setValue(e.target.value);
+  };
   return (
     <label className={styles.field}>
       <span>{label}</span>
-      <input
-        ref={ref}
-        className={styles.input}
-        defaultValue={value}
-        list={list}
-        type="text"
-        onInput={debounced((e: ChangeEvent<HTMLInputElement>) => {
-          setValue(e.target.value);
-        }, debounce || 500)}
-      />
+      <input className={styles.input} list={list} type="text" value={value} onChange={onChange} />
     </label>
   );
 }

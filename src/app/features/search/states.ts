@@ -1,4 +1,5 @@
 import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { doWithTransition } from '../../common/functions/react-util';
 import { Data, DataForList } from '../../common/schema';
 
 export const ORDER_BY_ITEMS = [
@@ -11,18 +12,17 @@ export const ORDER_BY_ITEMS = [
   { id: 'updatedAt-asc', field: 'updatedAt', direction: 'asc' },
   { id: 'updatedAt-desc', field: 'updatedAt', direction: 'desc' },
 ] as const;
-const PAGE_SIZE = 200;
+const PAGE_SIZE = 5;
 
 type OrderByItem = (typeof ORDER_BY_ITEMS)[number];
 
 const orderByAtom = atom<OrderByItem>(ORDER_BY_ITEMS[7]);
 const setOrderByAtom = atom(null, (_get, set, id: string) => {
-  console.log(ORDER_BY_ITEMS);
-  console.log(id);
   const item = ORDER_BY_ITEMS.find((item) => item.id === id);
-  console.log(item);
   if (item) {
-    set(orderByAtom, item);
+    doWithTransition(() => {
+      set(orderByAtom, item);
+    });
   }
 });
 export function useOrderBy(): [OrderByItem, (id: string) => void] {
@@ -31,10 +31,47 @@ export function useOrderBy(): [OrderByItem, (id: string) => void] {
   return [orderBy, setOrderBy];
 }
 
-export const paroleAtom = atom('');
-export const tagAtom = atom('');
-export const systemAtom = atom('');
-export const freeTextAtom = atom('');
+const paroleAtom_ = atom('');
+export const paroleAtom = atom(
+  (get) => get(paroleAtom_),
+  (_get, set, parole: string) => {
+    doWithTransition(() => {
+      set(paroleAtom_, parole);
+      set(pageAtom, 1);
+    });
+  },
+);
+const tagAtom_ = atom('');
+export const tagAtom = atom(
+  (get) => get(tagAtom_),
+  (_get, set, tag: string) => {
+    doWithTransition(() => {
+      set(tagAtom_, tag);
+      set(pageAtom, 1);
+    });
+  },
+);
+const systemAtom_ = atom('');
+export const systemAtom = atom(
+  (get) => get(systemAtom_),
+  (_get, set, system: string) => {
+    doWithTransition(() => {
+      set(systemAtom_, system);
+      set(pageAtom, 1);
+    });
+  },
+);
+const freeTextAtom_ = atom('');
+export const freeTextAtom = atom(
+  (get) => get(freeTextAtom_),
+  (_get, set, freeText: string) => {
+    doWithTransition(() => {
+      set(freeTextAtom_, freeText);
+      set(pageAtom, 1);
+    });
+  },
+);
+
 const freeSearchAtom = atom((get) => {
   const freeText = get(freeTextAtom);
   return freeText.split('|').map((item) => item.trim());
@@ -52,15 +89,17 @@ export const allSystemsAtom = atom(async (get) => {
   return Array.from(new Set(units.map((unit) => unit.system)));
 });
 const filteredUnitsAtom = atom(async (get) => {
-  const units = await get(unitsAtom);
   const tag = get(tagAtom);
   const system = get(systemAtom);
   const freeSearch = get(freeSearchAtom);
+  const orderBy = get(orderByAtom);
+  console.log('called', tag, system, freeSearch, orderBy);
+  const units = await get(unitsAtom);
   const items = units.filter((unit) => {
     if (tag && !unit.tags.includes(tag)) {
       return false;
     }
-    if (system && unit.system !== system) {
+    if (system && !unit.system.includes(system)) {
       return false;
     }
     for (const freeSearchItem of freeSearch) {
@@ -75,7 +114,6 @@ const filteredUnitsAtom = atom(async (get) => {
     }
     return true;
   });
-  const orderBy = get(orderByAtom);
   const compareFn =
     orderBy.direction === 'asc'
       ? (a: DataForList, b: DataForList) => a[orderBy.field].localeCompare(b[orderBy.field])

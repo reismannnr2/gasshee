@@ -4,5 +4,5 @@ export type Props = {
   fallback?: React.ReactNode;
 };
 export default function Maybe({ test, children, fallback }: Props) {
-  return test ? <>{children}</> : fallback ? fallback : null;
+  return test ? <>{children}</> : fallback ? <>[fallback]</> : null;
 }

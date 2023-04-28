@@ -41,3 +41,29 @@ export function mergeRefs<T>(...refs: Ref<T>[]): (value: T) => void {
     }
   };
 }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function withTransition<T, Args extends any[]>(f: (...args: Args) => Promise<T>): (...args: Args) => Promise<T> {
+  return async (...args) => {
+    return new Promise((resolve) => {
+      if ('startViewTransition' in document) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (document as any).startViewTransition(() => {
+          resolve(f(...args));
+        });
+      } else {
+        resolve(f(...args));
+      }
+    });
+  };
+}
+
+export function doWithTransition(f: () => void): void {
+  if ('startViewTransition' in document) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (document as any).startViewTransition(() => {
+      f();
+    });
+  } else {
+    f();
+  }
+}
