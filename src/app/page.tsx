@@ -1,4 +1,4 @@
-import Gcr from './systems/gcr/gcr';
+import Gcr from './systems/gcr/components/gcr';
 
 export default function Home() {
   return (
