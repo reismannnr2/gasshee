@@ -1,106 +1,110 @@
-import { useEffect, useRef } from 'react';
+import { Atom, useAtomValue, useSetAtom, WritableAtom } from 'jotai';
+import React, { ChangeEvent, useEffect, useMemo, useRef } from 'react';
 import { debounced } from '../../common/functions/generate-fns';
 import { genericMemo } from '../../common/functions/react-util';
-import { Setter } from '../../common/types';
 import styles from './user-input.module.scss';
 
-type InputDefImpl<T, Ex> =
-  | NumberInputDef<T, Ex>
-  | TextInputDef<T, Ex>
-  | CustomInputDef<T, Ex>
-  | ReadonlyInputDef<T, Ex>
-  | EmptyDef;
-type InputDefGenerate<T, Ex> = {
-  fn: (item: T, ex: Ex) => InputDefImpl<T, Ex>;
+type InputDefImpl<From, To, Args> =
+  | PlaceholderDef
+  | ReadonlyDef<From, Args>
+  | TextInputDef<From, To, Args>
+  | TextAreaInputDef<From, To, Args>
+  | CustomInputDef<From, To, Args>;
+
+type InputDefGenerate<From, To, Args> = {
+  id?: string;
   title: string;
-};
-export type InputDef<T, Ex> = InputDefImpl<T, Ex> | InputDefGenerate<T, Ex>;
-
-export type Props<T, Ex> = {
-  def: InputDef<T, Ex>;
-  item: T;
-  setter: Setter<T>;
-  ex: Ex;
+  fn: (from: From, args: Args) => Atom<InputDefImpl<From, To, Args> | undefined>;
 };
 
-function isGenerate<T, Ex>(def: InputDef<T, Ex>): def is InputDefGenerate<T, Ex> {
-  return 'fn' in def;
-}
+export type InputDef<From, To, Args> = InputDefGenerate<From, To, Args>;
 
-const UserInput = genericMemo(function UserInput<T, Ex>({ def, item, setter, ex }: Props<T, Ex>) {
-  const actualDef = isGenerate(def) ? def.fn(item, ex) : def;
+export type Props<From, To, Args> = {
+  def: InputDef<From, To, Args>;
+  from: From;
+  to: To;
+  args: Args;
+};
+
+const UserInput = genericMemo(function UserInput<From, To, Args>({ def, from, to, args }: Props<From, To, Args>) {
+  const defAtom = useMemo(() => def.fn(from, args), [def, from, args]);
+  const actualDef = useAtomValue(defAtom);
+  if (!actualDef) {
+    return null;
+  }
   switch (actualDef.type) {
-    case 'number':
-      return <NumberInput def={actualDef} ex={ex} item={item} setter={setter} />;
-    case 'text':
-      return <TextInput def={actualDef} ex={ex} item={item} setter={setter} />;
-    case 'custom':
-      return <CustomInput def={actualDef} ex={ex} item={item} setter={setter} />;
+    case 'placeholder':
+      return <Placeholder def={actualDef} />;
     case 'readonly':
-      return <ReadonlyInput def={actualDef} ex={ex} item={item} />;
-    case 'empty':
-      return <EmptyInput def={actualDef} />;
+      return <ReadonlyInput args={args} def={actualDef} from={from} />;
+    case 'text':
+      return <TextInput args={args} def={actualDef} from={from} to={to} />;
+    case 'textarea':
+      return <TextAreaInput args={args} def={actualDef} from={from} to={to} />;
+    case 'custom':
+      return <CustomInput args={args} def={actualDef} from={from} to={to} />;
   }
 });
 
 export default UserInput;
 
-type NumberInputDef<T, Ex> = {
-  type: 'number';
+type PlaceholderDef = {
+  type: 'placeholder';
   title: string;
-  from: (state: T, ex: Ex) => string;
-  to: (prev: T, value: number, ex: Ex) => T;
-  inputProps?: Partial<JSX.IntrinsicElements['input']>;
+  spanProps?: Partial<JSX.IntrinsicElements['span']>;
 };
 
-type NumberInputProps<T, Ex> = {
-  item: T;
-  def: NumberInputDef<T, Ex>;
-  setter: Setter<T>;
-  ex: Ex;
+type PlaceholderProps = {
+  def: PlaceholderDef;
 };
 
-function NumberInput<T, Ex>({ item, def, setter, ex }: NumberInputProps<T, Ex>) {
-  const ref = useRef<HTMLInputElement>(null);
-  const value = def.from(item, ex);
-  useEffect(() => {
-    const n = Number(value);
-    if (ref.current && Number(ref.current.value) !== n) {
-      ref.current.value = String(value);
-    }
-  }, [value]);
+function Placeholder({ def }: PlaceholderProps) {
+  return <span data-title={def.title} {...def.spanProps} />;
+}
+
+type ReadonlyDef<From, Args> = {
+  type: 'readonly';
+  title: string;
+  from: (source: From, args: Args) => Atom<string>;
+  spanProps?: Partial<JSX.IntrinsicElements['span']>;
+};
+
+type ReadonlyProps<From, Args> = {
+  def: ReadonlyDef<From, Args>;
+  from: From;
+  args: Args;
+};
+
+function ReadonlyInput<From, Args>({ def, from, args }: ReadonlyProps<From, Args>) {
+  const valueAtom = useMemo(() => def.from(from, args), [def, from, args]);
+  const value = useAtomValue(valueAtom);
   return (
-    <input
-      ref={ref}
-      className={styles.input}
-      data-title={def.title}
-      defaultValue={def.from(item, ex)}
-      onChange={debounced((e) => {
-        const n = Number(e.target.value);
-        setter((prev) => def.to(prev, n, ex));
-      }, 500)}
-      {...def.inputProps}
-    />
+    <span className={styles['read-only']} data-title={def.title} {...def.spanProps}>
+      {value}
+    </span>
   );
 }
 
-type TextInputDef<T, Ex> = {
+type TextInputDef<From, To, Args> = {
   type: 'text';
   title: string;
-  from: (state: T, ex: Ex) => string;
-  to: (prev: T, value: string, ex: Ex) => T;
+  from: (from: From, args: Args) => Atom<string>;
+  to: (to: To, args: Args) => WritableAtom<null, [string], void>;
   inputProps?: Partial<JSX.IntrinsicElements['input']>;
 };
 
-type TextInputProps<T, Ex> = {
-  item: T;
-  def: TextInputDef<T, Ex>;
-  setter: Setter<T>;
-  ex: Ex;
+type TextInputProps<From, To, Args> = {
+  def: TextInputDef<From, To, Args>;
+  from: From;
+  to: To;
+  args: Args;
 };
 
-function TextInput<T, Ex>({ item, def, setter, ex }: TextInputProps<T, Ex>) {
-  const value = def.from(item, ex);
+function TextInput<From, To, Args>({ def, from, to, args }: TextInputProps<From, To, Args>) {
+  const valueAtom = useMemo(() => def.from(from, args), [def, from, args]);
+  const value = useAtomValue(valueAtom);
+  const writeAtom = useMemo(() => def.to(to, args), [def, to, args]);
+  const setter = useSetAtom(writeAtom);
   const ref = useRef<HTMLInputElement>(null);
   useEffect(() => {
     if (ref.current && ref.current.value !== value) {
@@ -112,63 +116,68 @@ function TextInput<T, Ex>({ item, def, setter, ex }: TextInputProps<T, Ex>) {
       ref={ref}
       className={styles.input}
       data-title={def.title}
-      defaultValue={def.from(item, ex)}
-      onChange={debounced((e) => {
-        setter((prev) => def.to(prev, e.target.value, ex));
-      }, 500)}
+      defaultValue={value}
+      onChange={debounced((e: ChangeEvent<HTMLInputElement>) => {
+        setter(e.target.value);
+      })}
       {...def.inputProps}
     />
   );
 }
 
-type CustomInputDef<T, Ex> = {
-  type: 'custom';
+type TextAreaInputDef<From, To, Args> = {
+  type: 'textarea';
   title: string;
-  render: (item: T, setter: Setter<T>, def: CustomInputDef<T, Ex>, ex: Ex) => React.ReactNode;
+  from: (from: From, args: Args) => Atom<string>;
+  to: (to: To, args: Args) => WritableAtom<null, [string], void>;
+  textareaProps?: Partial<JSX.IntrinsicElements['textarea']>;
 };
 
-type CustomInputProps<T, Ex> = {
-  item: T;
-  def: CustomInputDef<T, Ex>;
-  setter: Setter<T>;
-  ex: Ex;
+type TextAreaInputProps<From, To, Args> = {
+  def: TextAreaInputDef<From, To, Args>;
+  from: From;
+  to: To;
+  args: Args;
 };
 
-function CustomInput<T, Ex>({ item, def, setter, ex }: CustomInputProps<T, Ex>) {
-  return <>{def.render(item, setter, def, ex)}</>;
-}
-
-type ReadonlyInputDef<T, Ex> = {
-  type: 'readonly';
-  title: string;
-  from: (state: T, ex: Ex) => string;
-  spanProps?: Partial<JSX.IntrinsicElements['input']>;
-};
-
-type ReadonlyInputProps<T, Ex> = {
-  item: T;
-  def: ReadonlyInputDef<T, Ex>;
-  ex: Ex;
-};
-
-function ReadonlyInput<T, Ex>({ item, def, ex }: ReadonlyInputProps<T, Ex>) {
+function TextAreaInput<From, To, Args>({ def, from, to, args }: TextAreaInputProps<From, To, Args>) {
+  const valueAtom = useMemo(() => def.from(from, args), [def, from, args]);
+  const value = useAtomValue(valueAtom);
+  const writeAtom = useMemo(() => def.to(to, args), [def, to, args]);
+  const setter = useSetAtom(writeAtom);
+  const ref = useRef<HTMLTextAreaElement>(null);
+  useEffect(() => {
+    if (ref.current && ref.current.value !== value) {
+      ref.current.value = value;
+    }
+  });
   return (
-    <span className={styles['read-only']} data-title={def.title} {...def.spanProps}>
-      {def.from(item, ex)}
-    </span>
+    <textarea
+      ref={ref}
+      className={styles.input}
+      data-title={def.title}
+      defaultValue={value}
+      onChange={debounced((e: ChangeEvent<HTMLTextAreaElement>) => {
+        setter(e.target.value);
+      })}
+      {...def.textareaProps}
+    />
   );
 }
 
-type EmptyDef = {
-  type: 'empty';
+type CustomInputDef<From, To, Args> = {
+  type: 'custom';
   title: string;
-  spanProps?: Partial<JSX.IntrinsicElements['input']>;
+  render: (from: From, to: To, args: Args) => React.ReactNode;
 };
 
-type EmptyProps = {
-  def: EmptyDef;
+type CustomInputProps<From, To, Args> = {
+  def: CustomInputDef<From, To, Args>;
+  from: From;
+  to: To;
+  args: Args;
 };
 
-function EmptyInput({ def }: EmptyProps) {
-  return <span data-title={def.title} {...def.spanProps} />;
+function CustomInput<From, To, Args>({ def, from, to, args }: CustomInputProps<From, To, Args>) {
+  return <>{def.render(from, to, args)}</>;
 }

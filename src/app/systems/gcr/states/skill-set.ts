@@ -1,7 +1,6 @@
-import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { atom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
 import { nanoid } from 'nanoid';
-import { useMemo } from 'react';
 import { STAT_NAMES, StatName } from './stats';
 
 export type SkillItem = {
@@ -54,67 +53,61 @@ const skillSetAtom = atom<SkillSet>({
   ],
 });
 
-const skillSetFamily = atomFamily((statName: StatName) => atom((get) => get(skillSetAtom)[statName]));
-const updateSkillAtom = atom(null, (_, set, { statName, skill }: { statName: StatName; skill: SkillItem }) => {
-  set(skillSetAtom, (prev) => {
-    const items = prev[statName];
-    const index = items.findIndex((s) => s.id === skill.id);
-    if (index === -1) {
-      return {
-        ...prev,
-        [statName]: [...items, skill],
-      };
+export const skillSetFamily = atomFamily((statName: StatName) => atom((get) => get(skillSetAtom)[statName]));
+export const updateSkillSetFamily = atomFamily((statName: StatName) =>
+  atom(null, (get, set, transform: (prev: SkillItem[]) => SkillItem[]) => {
+    const skillSet = get(skillSetAtom);
+    const prev = skillSet[statName];
+    const next = transform(prev);
+    set(skillSetAtom, { ...skillSet, [statName]: next });
+  }),
+);
+
+export const skillFamily = atomFamily((skillId: string) =>
+  atom((get) => {
+    const skillSet = get(skillSetAtom);
+    for (const skills of Object.values(skillSet)) {
+      for (const skill of skills) {
+        if (skill.id === skillId) {
+          return skill;
+        }
+      }
     }
-    const nextItems = items.slice();
-    nextItems[index] = skill;
-    return {
-      ...prev,
-      [statName]: nextItems,
-    };
-  });
-});
-
-export function useSkillSetValue(): SkillSet {
-  return useAtomValue(skillSetAtom);
-}
-export function useSkillSetWithName(statName: StatName) {
-  return useAtomValue(skillSetFamily(statName));
-}
-export function useUpdateSkillSet() {
-  return useSetAtom(skillSetAtom);
-}
-
-export function useUpdateSkill(statName: StatName) {
-  const updateSkill = useSetAtom(updateSkillAtom);
-  return useMemo(
-    () => ({
-      addNewItem: () => {
-        updateSkill({ statName, skill: { id: nanoid(), 技能名: '', レベル: 2 } });
-      },
-      update: (skill: SkillItem) => updateSkill({ statName, skill }),
-    }),
-    [statName, updateSkill],
-  );
-}
-
-export function findSkillItem(skillName: string, skillSet: SkillSet) {
-  if (skillName in skillSet) {
-    return {
-      item: {
-        id: nanoid(),
-        技能名: skillName,
-        レベル: 2,
-      },
-      referTo: skillName,
-    };
-  }
-  for (const statName of STAT_NAMES) {
-    const item = skillSet[statName].find((s) => s.技能名 === skillName);
-    if (item) {
-      return {
-        item,
-        referTo: statName,
-      };
+  }),
+);
+export const skillNameFamily = atomFamily((skillId: string) => atom((get) => get(skillFamily(skillId))?.技能名 || ''));
+export const updateSkillFamily = atomFamily((skillId: string) =>
+  atom(null, (get, set, update: (prev: SkillItem) => SkillItem) => {
+    const skillSet = get(skillSetAtom);
+    for (const statName of STAT_NAMES) {
+      const list = skillSet[statName];
+      for (const [index, item] of list.entries()) {
+        if (item.id === skillId) {
+          const next = list.slice();
+          next[index] = update(item);
+          set(skillSetAtom, { ...skillSet, [statName]: next });
+          return;
+        }
+      }
     }
-  }
-}
+  }),
+);
+export const updateSkillNameFamily = atomFamily((skillId: string) =>
+  atom(null, (_, set, name: string) => {
+    set(updateSkillFamily(skillId), (prev) => ({ ...prev, 技能名: name }));
+  }),
+);
+export const updateSkillLevelFamily = atomFamily((skillId: string) =>
+  atom(null, (_, set, level: number) => {
+    set(updateSkillFamily(skillId), (prev) => ({ ...prev, レベル: level }));
+  }),
+);
+
+export const addNewSkillFamily = atomFamily((statName: StatName) =>
+  atom(null, (get, set) => {
+    const skillSet = get(skillSetAtom);
+    const next = skillSet[statName].slice();
+    next.push({ id: nanoid(), 技能名: '', レベル: 2 });
+    set(skillSetAtom, { ...skillSet, [statName]: next });
+  }),
+);

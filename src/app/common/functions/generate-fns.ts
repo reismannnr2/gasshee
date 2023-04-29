@@ -26,7 +26,7 @@ export function fromAndToWith<T, K extends keyof T, V>(
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function debounced<T extends (...args: any[]) => void>(
   callback: T,
-  time: number,
+  time = 500,
 ): (...args: Parameters<T>) => void {
   let timeoutId: number | null = null;
   return (...args: Parameters<T>) => {
