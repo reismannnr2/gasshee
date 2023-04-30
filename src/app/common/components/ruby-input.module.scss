@@ -1,0 +1,54 @@
+.show {
+  display: inline-block;
+  width: 100%;
+  border-bottom: 1px dotted #666;
+
+  &[data-placeholdered] {
+    color: #ccc;
+  }
+}
+
+.wrapper {
+  width: 100%;
+}
+
+.description {
+  margin-bottom: 2rem;
+  margin-left: 2rem;
+}
+
+.modal {
+  position: relative;
+  width: 40vw;
+  min-width: 400px;
+  padding: 1rem 2rem 2rem;
+  font-size: 0.75rem;
+  background-color: white;
+}
+
+.modal-title {
+  font-size: 1rem;
+}
+
+.input {
+  display: inline-block;
+  width: 80%;
+  margin-bottom: 1rem;
+  margin-left: 2rem;
+  border-bottom: 1px dotted #666;
+}
+
+.close {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 1rem;
+  color: white;
+  background-color: black;
+  border: 1px solid black;
+
+  &:hover {
+    background-color: #444;
+  }
+}

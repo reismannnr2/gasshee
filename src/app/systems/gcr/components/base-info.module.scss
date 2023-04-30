@@ -1,0 +1,31 @@
+.base-info {
+  margin-bottom: 2rem;
+}
+
+.character-name {
+  width: 30rem;
+  margin-bottom: 1rem;
+}
+
+.class-info {
+  display: grid;
+  grid-template-columns: 4rem max-content max-content max-content;
+}
+
+.character-level {
+  font-size: 0.75rem;
+}
+
+.level-input {
+  width: 2rem;
+  text-align: center;
+  border-bottom: 1px dotted #666;
+}
+
+.style-input {
+  width: 12rem;
+  margin-left: 1rem;
+  font-size: 0.75rem;
+  text-align: center;
+  border: 1px solid black;
+}

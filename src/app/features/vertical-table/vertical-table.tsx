@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import { Atom, WritableAtom, useAtomValue, useSetAtom } from 'jotai';
 import { genericMemo } from '../../common/functions/react-util';
+import { useAnimateHeight } from '../animation/use-animate-height';
 import UserInput, { InputDef } from '../user-input/user-input';
 import styles from './vertical-table.module.scss';
 
@@ -17,9 +18,10 @@ export default function VerticalTable<T extends { id: string }, From, To, Args>(
   from,
   to,
 }: Props<T, From, To, Args>) {
+  const { innerRef, outerRef, className } = useAnimateHeight<HTMLUListElement, HTMLDivElement>(2);
   return (
-    <div className={clsx(styles.container)}>
-      <ul className={clsx(layout, styles.table)}>
+    <div ref={outerRef} className={clsx(styles.container, className)}>
+      <ul ref={innerRef} className={clsx(layout, styles.table)}>
         {columnDefs.map((columnDef) => (
           <Column key={columnDef.id || columnDef.title} def={columnDef} from={from} to={to} />
         ))}

@@ -62,30 +62,42 @@ export type RubyItem = {
 function parse(tokens: ReadonlyArray<Token>): RubyItem[] {
   const items: RubyItem[] = [];
   let item: RubyItem = { text: '' };
+  let open = false;
   let ruby = false;
   for (const token of tokens) {
     switch (token.type) {
       case 'open':
+        open = true;
+        if (item.text) {
+          items.push(item);
+          item = { text: '' };
+        }
+        break;
+      case 'separator':
+        if (!open) {
+          break;
+        }
         ruby = true;
         break;
       case 'close':
+        open = false;
         ruby = false;
-        break;
-      case 'separator':
-        item.ruby = '';
+        items.push(item);
+        item = { text: '' };
         break;
       case 'text':
-        if (ruby) {
-          item.ruby += token.text;
-        } else {
+        if (open && !ruby) {
           item.text += token.text;
+        } else if (open && ruby) {
+          item.ruby = token.text;
+        } else {
+          item.text = token.text;
         }
         break;
     }
-    if (token.type === 'close' || token.type === 'text') {
-      items.push(item);
-      item = { text: '' };
-    }
+  }
+  if (item.text) {
+    items.push(item);
   }
   return items;
 }

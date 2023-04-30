@@ -1,6 +1,7 @@
 import { atom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
 import { nanoid } from 'nanoid';
+import { doWithTransition } from '../../../common/functions/react-util';
 import { STAT_NAMES, StatName } from './stats';
 
 export type SkillItem = {
@@ -108,6 +109,6 @@ export const addNewSkillFamily = atomFamily((statName: StatName) =>
     const skillSet = get(skillSetAtom);
     const next = skillSet[statName].slice();
     next.push({ id: nanoid(), 技能名: '', レベル: 2 });
-    set(skillSetAtom, { ...skillSet, [statName]: next });
+    doWithTransition(() => set(skillSetAtom, { ...skillSet, [statName]: next }));
   }),
 );

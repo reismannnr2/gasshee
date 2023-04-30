@@ -1,11 +1,12 @@
-import Search from './features/search/search';
-import styles from './page.module.scss';
+import PageBase from './common/page-base';
+import Gcr from './systems/gcr/components/gcr';
 
 export default function Home() {
   return (
     <div id="root">
-      <h1 className={styles.header}>test</h1>
-      <Search />
+      <PageBase>
+        <Gcr />
+      </PageBase>
     </div>
   );
 }
