@@ -1,10 +1,10 @@
 import clsx from 'clsx';
 import { Atom, WritableAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useMemo } from 'react';
-import LazyModal from '../../features/modals/lazy-modal';
-import { useLazyModal } from '../../features/modals/use-modal';
-import rubify from '../../features/rubied-text/rubify';
-import { customFlags } from '../functions/react-util';
+import { customFlags } from '../../common/functions/react-util';
+import LazyModal from '../modals/lazy-modal';
+import { useLazyModal } from '../modals/use-modal';
+import rubify from './rubify';
 import styles from './ruby-input.module.scss';
 
 export type Props = {

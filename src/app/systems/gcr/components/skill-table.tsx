@@ -6,7 +6,7 @@ import { customFlags } from '../../../common/functions/react-util';
 import { InputDef } from '../../../features/user-input/user-input';
 import VerticalTable, { ColumnDef } from '../../../features/vertical-table/vertical-table';
 import {
-  SkillItem,
+  GcrSkillItem,
   addNewSkillFamily,
   skillFamily,
   skillNameFamily,
@@ -19,10 +19,10 @@ import { STAT_NAMES } from '../states/stats';
 import styles from './skill-table.module.scss';
 
 export default function SkillTable() {
-  return <VerticalTable<SkillItem, From, To, string> {...tableProps} />;
+  return <VerticalTable<GcrSkillItem, From, To, string> {...tableProps} />;
 }
 
-function SkillLevel({ skill: item, to }: { skill: SkillItem; to: To }) {
+function SkillLevel({ skill: item, to }: { skill: GcrSkillItem; to: To }) {
   const update = useSetAtom(to.updateSkillLevelFamily(item.id));
   return (
     <ol className={styles['level-selector']}>
@@ -67,7 +67,7 @@ const inputDefs: InputDef<From, To, string>[] = [
         if (!skill) {
           return;
         }
-        if (skill.fixed) {
+        if (skill.固定) {
           return {
             type: 'readonly',
             title,
@@ -100,11 +100,11 @@ const inputDefs: InputDef<From, To, string>[] = [
   },
 ];
 const args = atomFamily(
-  (SkillItem: SkillItem) => atom(SkillItem.id),
+  (SkillItem: GcrSkillItem) => atom(SkillItem.id),
   (a, b) => a.id === b.id,
 );
 
-const columnDefs: ColumnDef<SkillItem, From, To, string>[] = STAT_NAMES.map((statName) => {
+const columnDefs: ColumnDef<GcrSkillItem, From, To, string>[] = STAT_NAMES.map((statName) => {
   return {
     title: statName,
     inputDefs,
@@ -137,7 +137,7 @@ const columnDefs: ColumnDef<SkillItem, From, To, string>[] = STAT_NAMES.map((sta
               onClick={() => {
                 setter((prev) => {
                   const last = prev.at(-1);
-                  if (!last || last.fixed) {
+                  if (!last || last.固定) {
                     return prev;
                   }
                   return prev.slice(0, -1);

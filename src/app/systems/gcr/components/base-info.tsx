@@ -1,7 +1,7 @@
 import { atom, useAtomValue } from 'jotai';
-import RubyInput from '../../../common/components/ruby-input';
 import SimpleInput, { SimpleNumberInput } from '../../../common/components/simple-input';
 import ToggleBox from '../../../common/components/toggle-box';
+import RubyInput from '../../../features/rubied-text/ruby-input';
 import {
   CLASS_NAMES,
   GcrClassName,

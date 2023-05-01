@@ -1,3 +1,44 @@
 .layout {
   font-size: 0.75rem;
+
+  & :global(.head-list),
+  & :global(.content-list) {
+    display: grid;
+    grid-template-columns: 18rem 1fr;
+  }
+
+  & [data-title='備考'] {
+    resize: none;
+  }
+}
+
+.stat-select {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  list-style-type: none;
+}
+
+.stat-button {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+
+  &[data-selected] {
+    color: white;
+    background-color: black;
+  }
+
+  &:hover {
+    background-color: #bbb;
+  }
+}
+
+.abilities {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  list-style-type: none;
+}
+
+.abilities-item:not(:last-child) {
+  border-right: 1px dotted #666;
 }

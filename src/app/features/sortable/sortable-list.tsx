@@ -64,7 +64,7 @@ export default function SortableList<T extends { id: string }, From, To, Args>({
     value: abbreviated,
     setter: setAbbreviated,
   });
-  const { innerRef, outerRef, className: animate } = useAnimateHeight<HTMLUListElement, HTMLDivElement>(2);
+  const { innerRef, outerRef, className: animate } = useAnimateHeight<HTMLDivElement, HTMLDivElement>(2);
   const items = useAtomValue(listDef.from(from));
   const setItems = useSetAtom(listDef.to(to));
   const sensors = useSensors(
@@ -91,21 +91,23 @@ export default function SortableList<T extends { id: string }, From, To, Args>({
         <div className={clsx(styles['sortable-list'], layout)}>
           <Controller abbreviate={abbreviate} add={add} remove={remove} to={to} />
           <div ref={outerRef} className={clsx(styles.table, animate)}>
-            <HeadRow titles={rowDef.inputDefs.map((def) => def.title)} />
-            <ul ref={innerRef} {...customFlags({ abbreviated })}>
-              {items.map((item) => (
-                <Row
-                  key={item.id}
-                  abbreviated={abbreviated}
-                  detailsDef={detailsDef}
-                  disableSort={disableSort}
-                  from={from}
-                  item={item}
-                  rowDef={rowDef}
-                  to={to}
-                />
-              ))}
-            </ul>
+            <div ref={innerRef}>
+              <HeadRow titles={rowDef.inputDefs.map((def) => def.title)} />
+              <ul className={styles.items} {...customFlags({ abbreviated })}>
+                {items.map((item) => (
+                  <Row
+                    key={item.id}
+                    abbreviated={abbreviated}
+                    detailsDef={detailsDef}
+                    disableSort={disableSort}
+                    from={from}
+                    item={item}
+                    rowDef={rowDef}
+                    to={to}
+                  />
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
       </SortableContext>

@@ -6,6 +6,10 @@
   border: 1px dotted #666;
 }
 
+.items {
+  list-style-type: none;
+}
+
 .head-contaienr {
   display: grid;
   grid-template-columns: 1fr 1rem;
@@ -13,6 +17,7 @@
 }
 
 .head-list {
+  composes: head-list from global;
   list-style-type: none;
 
   & > li {
@@ -56,6 +61,7 @@ li:not(:last-child)[data-dragging] .content-container {
 }
 
 .content-list {
+  composes: content-list from global;
   list-style-type: none;
 
   & > li:not(:last-child) {

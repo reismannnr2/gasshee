@@ -4,59 +4,59 @@ import { nanoid } from 'nanoid';
 import { doWithTransition } from '../../../common/functions/react-util';
 import { STAT_NAMES, StatName } from './stats';
 
-export type SkillItem = {
+export type GcrSkillItem = {
   id: string;
-  fixed?: boolean;
+  固定?: boolean;
   技能名: string;
   レベル: number;
 };
-export type SkillSet = {
-  [key in StatName]: SkillItem[];
+export type GcrSkillSet = {
+  [key in StatName]: GcrSkillItem[];
 };
 
-const skillSetAtom = atom<SkillSet>({
+export const skillSetAtom = atom<GcrSkillSet>({
   筋力: [
-    { id: nanoid(), 技能名: '格闘', レベル: 2, fixed: true },
-    { id: nanoid(), 技能名: '力技', レベル: 2, fixed: true },
-    { id: nanoid(), 技能名: '重武器', レベル: 2, fixed: true },
-    { id: nanoid(), 技能名: '水泳', レベル: 2, fixed: true },
-    { id: nanoid(), 技能名: '頑健', レベル: 2, fixed: true },
+    { id: nanoid(), 技能名: '格闘', レベル: 2, 固定: true },
+    { id: nanoid(), 技能名: '力技', レベル: 2, 固定: true },
+    { id: nanoid(), 技能名: '重武器', レベル: 2, 固定: true },
+    { id: nanoid(), 技能名: '水泳', レベル: 2, 固定: true },
+    { id: nanoid(), 技能名: '頑健', レベル: 2, 固定: true },
   ],
   反射: [
-    { id: nanoid(), 技能名: '軽武器', レベル: 2, fixed: true },
-    { id: nanoid(), 技能名: '運動', レベル: 2, fixed: true },
-    { id: nanoid(), 技能名: '隠密', レベル: 2, fixed: true },
-    { id: nanoid(), 技能名: '回避', レベル: 2, fixed: true },
-    { id: nanoid(), 技能名: '騎乗', レベル: 2, fixed: true },
+    { id: nanoid(), 技能名: '軽武器', レベル: 2, 固定: true },
+    { id: nanoid(), 技能名: '運動', レベル: 2, 固定: true },
+    { id: nanoid(), 技能名: '隠密', レベル: 2, 固定: true },
+    { id: nanoid(), 技能名: '回避', レベル: 2, 固定: true },
+    { id: nanoid(), 技能名: '騎乗', レベル: 2, 固定: true },
   ],
   感覚: [
-    { id: nanoid(), 技能名: '射撃', レベル: 2, fixed: true },
-    { id: nanoid(), 技能名: '手業', レベル: 2, fixed: true },
-    { id: nanoid(), 技能名: '知覚', レベル: 2, fixed: true },
-    { id: nanoid(), 技能名: '霊感', レベル: 2, fixed: true },
+    { id: nanoid(), 技能名: '射撃', レベル: 2, 固定: true },
+    { id: nanoid(), 技能名: '手業', レベル: 2, 固定: true },
+    { id: nanoid(), 技能名: '知覚', レベル: 2, 固定: true },
+    { id: nanoid(), 技能名: '霊感', レベル: 2, 固定: true },
   ],
   知力: [
-    { id: nanoid(), 技能名: '治療', レベル: 2, fixed: true },
-    { id: nanoid(), 技能名: '混沌知識', レベル: 2, fixed: true },
-    { id: nanoid(), 技能名: '聖印知識', レベル: 2, fixed: true },
-    { id: nanoid(), 技能名: '軍略知識', レベル: 2, fixed: true },
+    { id: nanoid(), 技能名: '治療', レベル: 2, 固定: true },
+    { id: nanoid(), 技能名: '混沌知識', レベル: 2, 固定: true },
+    { id: nanoid(), 技能名: '聖印知識', レベル: 2, 固定: true },
+    { id: nanoid(), 技能名: '軍略知識', レベル: 2, 固定: true },
     { id: nanoid(), 技能名: '専門知識:', レベル: 2 },
   ],
   精神: [
-    { id: nanoid(), 技能名: '意志', レベル: 2, fixed: true },
-    { id: nanoid(), 技能名: '聖印', レベル: 2, fixed: true },
+    { id: nanoid(), 技能名: '意志', レベル: 2, 固定: true },
+    { id: nanoid(), 技能名: '聖印', レベル: 2, 固定: true },
   ],
   共感: [
-    { id: nanoid(), 技能名: '話術', レベル: 2, fixed: true },
-    { id: nanoid(), 技能名: '感性', レベル: 2, fixed: true },
-    { id: nanoid(), 技能名: '情報収集', レベル: 2, fixed: true },
+    { id: nanoid(), 技能名: '話術', レベル: 2, 固定: true },
+    { id: nanoid(), 技能名: '感性', レベル: 2, 固定: true },
+    { id: nanoid(), 技能名: '情報収集', レベル: 2, 固定: true },
     { id: nanoid(), 技能名: '芸術:', レベル: 2 },
   ],
 });
 
 export const skillSetFamily = atomFamily((statName: StatName) => atom((get) => get(skillSetAtom)[statName]));
 export const updateSkillSetFamily = atomFamily((statName: StatName) =>
-  atom(null, (get, set, transform: (prev: SkillItem[]) => SkillItem[]) => {
+  atom(null, (get, set, transform: (prev: GcrSkillItem[]) => GcrSkillItem[]) => {
     const skillSet = get(skillSetAtom);
     const prev = skillSet[statName];
     const next = transform(prev);
@@ -78,7 +78,7 @@ export const skillFamily = atomFamily((skillId: string) =>
 );
 export const skillNameFamily = atomFamily((skillId: string) => atom((get) => get(skillFamily(skillId))?.技能名 || ''));
 export const updateSkillFamily = atomFamily((skillId: string) =>
-  atom(null, (get, set, update: (prev: SkillItem) => SkillItem) => {
+  atom(null, (get, set, update: (prev: GcrSkillItem) => GcrSkillItem) => {
     const skillSet = get(skillSetAtom);
     for (const statName of STAT_NAMES) {
       const list = skillSet[statName];
@@ -112,3 +112,14 @@ export const addNewSkillFamily = atomFamily((statName: StatName) =>
     doWithTransition(() => set(skillSetAtom, { ...skillSet, [statName]: next }));
   }),
 );
+
+export const allSkillNamesAtom = atom((get) => {
+  const skillSet = get(skillSetAtom);
+  const names = new Set<string>();
+  for (const skills of Object.values(skillSet)) {
+    for (const skill of skills) {
+      names.add(skill.技能名);
+    }
+  }
+  return names;
+});
