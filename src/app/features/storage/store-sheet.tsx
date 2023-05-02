@@ -158,7 +158,7 @@ function SaveButtons<T extends Readonly<Record<string, unknown>>>({ sheetAtom, s
           return;
         }}
       >
-        サーバー保存
+        新規登録
       </button>
       <button
         className={styles.button}
@@ -169,7 +169,7 @@ function SaveButtons<T extends Readonly<Record<string, unknown>>>({ sheetAtom, s
           return;
         }}
       >
-        サーバー更新
+        データ更新
       </button>
       <button
         className={styles.button}

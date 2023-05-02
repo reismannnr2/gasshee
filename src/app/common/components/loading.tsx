@@ -1,6 +1,6 @@
 import { Suspense, useEffect, useId, useRef } from 'react';
 import { RotatingSquare } from 'react-loader-spinner';
-import { useAsyncData } from '../hooks/use-async-data';
+import { useAsyncData } from '../hooks/data';
 import styles from './loading.module.scss';
 
 export type Props<T> = {
