@@ -1,10 +1,10 @@
 import { Atom, WritableAtom, useAtomValue, useSetAtom } from 'jotai';
 import { useRouter } from 'next/navigation';
-import { useLayoutEffect, useMemo, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import Loading from '../../common/components/loading';
 import MaybeWith from '../../common/components/maybe-with';
 import ToggleBox from '../../common/components/toggle-box';
-import { customFlags, doWithTransition } from '../../common/functions/react-util';
+import { customFlags } from '../../common/functions/react-util';
 import LazyModal from '../modals/lazy-modal';
 import { useLazyModal } from '../modals/use-modal';
 import {
@@ -19,17 +19,17 @@ import {
   sheetIdAtom,
   sheetNameAtom,
   sheetTagAtom,
-  useStoreSheetAtomValue,
+  storageAtom,
   userNameAtom,
 } from './states';
 import styles from './store-sheet.module.scss';
 
-export type Props<T> = {
+export type Props<T extends Readonly<Record<string, unknown>>> = {
   sheetAtom: Atom<T>;
   system: string;
 };
 
-export default function StoreSheet<T>({ sheetAtom, system }: Props<T>) {
+export default function StoreSheet<T extends Readonly<Record<string, unknown>>>({ sheetAtom, system }: Props<T>) {
   const { ref, openDialog, closeDialog, show } = useLazyModal();
   return (
     <div>
@@ -43,7 +43,7 @@ export default function StoreSheet<T>({ sheetAtom, system }: Props<T>) {
   );
 }
 
-function StoreModal<T>({ sheetAtom, system }: Props<T>) {
+function StoreModal<T extends Readonly<Record<string, unknown>>>({ sheetAtom, system }: Props<T>) {
   const advanced = useAtomValue(advancedModeAtom);
   const resetAdvanced = useSetAtom(resetAdvancedAtom);
   useLayoutEffect(() => {
@@ -142,10 +142,11 @@ function TextInput({
   );
 }
 
-function SaveButtons<T>({ sheetAtom, system }: Props<T>) {
+function SaveButtons<T extends Readonly<Record<string, unknown>>>({ sheetAtom, system }: Props<T>) {
   const id = useAtomValue(sheetIdAtom);
   const [promise, setPromise] = useState<Promise<unknown> | null>(null);
-  const postServer = usePostServer(sheetAtom, system, setPromise);
+  const router = useRouter();
+  const storage = useSetAtom(storageAtom);
   return (
     <div className={styles.buttons}>
       {id}
@@ -153,7 +154,7 @@ function SaveButtons<T>({ sheetAtom, system }: Props<T>) {
         className={styles.button}
         type="button"
         onClick={() => {
-          setPromise(postServer('create'));
+          setPromise(storage({ sheetAtom, system, baseMode: 'create', saveTo: 'server', setPromise, router }));
           return;
         }}
       >
@@ -164,17 +165,17 @@ function SaveButtons<T>({ sheetAtom, system }: Props<T>) {
         disabled={id === ''}
         type="button"
         onClick={() => {
-          setPromise(postServer('update'));
+          setPromise(storage({ sheetAtom, system, baseMode: 'update', saveTo: 'server', setPromise, router }));
           return;
         }}
       >
         サーバー更新
       </button>
       <button
-        disabled
         className={styles.button}
         type="button"
         onClick={() => {
+          storage({ sheetAtom, system, baseMode: 'update', saveTo: 'local', setPromise, router });
           return;
         }}
       >
@@ -183,45 +184,4 @@ function SaveButtons<T>({ sheetAtom, system }: Props<T>) {
       <MaybeWith test={promise}>{(p) => <Loading promise={p} />}</MaybeWith>
     </div>
   );
-}
-function usePostServer<T>(sheetAtom: Atom<T>, system: string, setPromise: (p: Promise<unknown> | null) => void) {
-  const router = useRouter();
-  const endpoint = useAtomValue(endpointAtom);
-  const value = useStoreSheetAtomValue(sheetAtom, system);
-  const id = useAtomValue(sheetIdAtom);
-  const json = useMemo(() => JSON.stringify(value), [value]);
-  return async (postMode: 'create' | 'update') => {
-    const params = new URLSearchParams();
-    const mode = id ? postMode : 'create';
-    params.append('data', json);
-    params.append('mode', mode);
-    const data = {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: params,
-    };
-    const res = await fetch(endpoint, data)
-      .then(async (res) => {
-        const json = await res.json();
-        if (json?.success && json?.id) {
-          doWithTransition(() => {
-            console.log('successfully post data on server');
-            router.push(`/systems/${system}?id=${json.id}`);
-          });
-        } else {
-          console.error(`Error: ${json}`);
-          window.alert('サーバーへの保存に失敗しました。');
-          setPromise(null);
-        }
-      })
-      .catch((e) => {
-        console.error(`unknown error on post ${e}`);
-        window.alert('サーバーへの保存に失敗しました。');
-        setPromise(null);
-      });
-    return res;
-  };
 }
