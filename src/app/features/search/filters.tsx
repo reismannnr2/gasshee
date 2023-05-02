@@ -1,4 +1,4 @@
-import { WritableAtom, useAtom, useAtomValue } from 'jotai';
+import { Atom, WritableAtom, useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { ChangeEvent } from 'react';
 import styles from './filters.module.scss';
 import {
@@ -6,7 +6,8 @@ import {
   allSystemsAtom,
   allTagsAtom,
   freeTextAtom,
-  paroleAtom,
+  rawParoleAtom,
+  setParoleDebouncedAtom,
   systemAtom,
   tagAtom,
   useOrderBy,
@@ -20,16 +21,16 @@ export default function Filters() {
           <SortOrder />
         </li>
         <li>
-          <InputField atom={paroleAtom} label="合言葉" />
+          <InputField label="合言葉" setterAtom={setParoleDebouncedAtom} valueAtom={rawParoleAtom} />
         </li>
         <li>
-          <InputField atom={systemAtom} label="システム" list="filter-systems" />
+          <InputField label="システム" list="filter-systems" setterAtom={systemAtom} valueAtom={systemAtom} />
         </li>
         <li>
-          <InputField atom={tagAtom} label="タグ" list="filter-tags" />
+          <InputField label="タグ" list="filter-tags" setterAtom={tagAtom} valueAtom={tagAtom} />
         </li>
         <li>
-          <InputField atom={freeTextAtom} label="フリー" />
+          <InputField label="フリー" setterAtom={freeTextAtom} valueAtom={freeTextAtom} />
         </li>
       </ul>
       <DataList />
@@ -98,14 +99,17 @@ function DataList() {
 
 function InputField({
   label,
-  atom,
+  valueAtom,
+  setterAtom,
   list,
 }: {
-  atom: WritableAtom<string, [string], void>;
+  valueAtom: Atom<string>;
+  setterAtom: WritableAtom<unknown, [string], void>;
   list?: string;
   label: string;
 }) {
-  const [value, setValue] = useAtom(atom);
+  const value = useAtom(valueAtom);
+  const setValue = useSetAtom(setterAtom);
   const onChange = async (e: ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
   };
