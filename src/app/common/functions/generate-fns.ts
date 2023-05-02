@@ -40,6 +40,12 @@ export function debounced<T extends (...args: any[]) => void>(
   };
 }
 
+export function neverPromise(): Promise<never> {
+  return new Promise(() => {
+    // never resolved
+  });
+}
+
 export function range(length: number): Generator<number>;
 export function range(start: number, end: number): Generator<number>;
 export function* range(startOrLength: number, maybeEnd?: number) {

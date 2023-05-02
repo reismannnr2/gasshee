@@ -1,7 +1,70 @@
 .modal {
-  width: 50vw;
-  padding: 1rem 2rem;
+  position: relative;
+  width: 40vw;
+  min-width: 400px;
+  padding: 1rem 2rem 6rem;
+  font-size: 0.75rem;
   background-color: white;
+}
+
+.modal-title {
+  font-size: 1rem;
+}
+
+.mode-toggle {
+  margin: 1rem 0;
+}
+
+.description {
+  margin-bottom: 2rem;
+  margin-left: 2rem;
+
+  & ul {
+    margin-left: 2rem;
+  }
+
+  & > li[data-hidden] {
+    visibility: hidden;
+  }
+}
+
+.fields {
+  margin-left: 2rem;
+  list-style-type: none;
+  border: 1px dotted #666;
+
+  & > li {
+    &[data-hidden] {
+      visibility: hidden;
+    }
+  }
+
+  & > li:not(:last-child) {
+    border-bottom: 1px dotted #666;
+  }
+
+  &:has(li[data-hidden]) {
+    border-top: 1px dotted #666;
+    border-right: none;
+    border-bottom: none;
+    border-left: none;
+
+    & > li {
+      border-right: 1px dotted #666;
+      border-left: 1px dotted #666;
+    }
+  }
+}
+
+.input {
+  display: inline-block;
+  width: 25rem;
+  border-left: 1px dotted #666;
+}
+
+.label {
+  display: inline-block;
+  width: 6rem;
 }
 
 .controller {
@@ -9,6 +72,34 @@
 
   & > :first-child {
     margin-right: 1rem;
+  }
+}
+
+.buttons {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  display: flex;
+  justify-content: flex-end;
+
+  & > :not(:last-child) {
+    margin-right: 1rem;
+  }
+
+  .button {
+    padding: 0.5rem 1rem;
+    color: white;
+    cursor: pointer;
+    background: black;
+    border: 1px solid black;
+
+    &:disabled {
+      opacity: 0.3;
+    }
+
+    &:not(:disabled):hover {
+      background-color: #444;
+    }
   }
 }
 

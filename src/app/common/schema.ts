@@ -8,19 +8,18 @@ const baseDataSchema = z.object({
   user: z.string(),
   tags: z.array(z.string()),
   parole: z.optional(z.string()),
+  password: z.optional(z.string()),
   createdAt: z.string().datetime({ offset: true }),
   updatedAt: z.string().datetime({ offset: true }),
 });
 
 export const plainDataSchema = baseDataSchema.extend({
   type: z.literal('plain'),
-  password: z.optional(z.string()),
   content: z.unknown(),
 });
 export type PlainData = z.infer<typeof plainDataSchema>;
 export const cipherDataSchema = baseDataSchema.extend({
   type: z.literal('cipher'),
-  password: z.optional(z.string()),
   content: z.string(),
 });
 export type CipherData = z.infer<typeof cipherDataSchema>;

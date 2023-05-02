@@ -22,7 +22,17 @@
     {
       "selector": "input",
       "rules": {
-        "no-refer-to-non-existent-id": false
+        "no-refer-to-non-existent-id": false,
+        "invalid-attr": {
+          "options": {
+            "allowAttrs": [
+              {
+                "name": "readonly",
+                "value": "Boolean"
+              }
+            ]
+          }
+        }
       }
     }
   ]

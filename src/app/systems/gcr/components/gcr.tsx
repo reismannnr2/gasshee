@@ -13,7 +13,7 @@ export default function Gcr() {
     <NoSSR>
       <main className={styles.main}>
         <Maybe test={true}>
-          <StoreSheet sheetAtom={gcrSheetAtom} />
+          <StoreSheet sheetAtom={gcrSheetAtom} system="GranCrest" />
         </Maybe>
         <Maybe test={false}>
           <BaseInfo />
