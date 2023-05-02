@@ -66,7 +66,7 @@ export const storageAtom = atom(null, async (get, _set, args: StorageAction<Read
         password: password || undefined,
         content: sheetBase,
       };
-  const json = JSON.stringify(value);
+  const json = JSON.stringify(value, null, saveTo === 'local' ? 2 : undefined);
   if (saveTo === 'server') {
     const params = new URLSearchParams();
     const mode = id ? postMode : 'create';
