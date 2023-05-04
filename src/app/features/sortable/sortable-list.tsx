@@ -34,13 +34,13 @@ export type Props<T extends { id: string }, From, To, Args> = {
   disableSort?: boolean;
   from: From;
   to: To;
-  add: (to: To) => WritableAtom<null, [], void>;
-  remove: (to: To) => WritableAtom<null, [], void>;
+  add: (to: To) => WritableAtom<unknown, [], void>;
+  remove: (to: To) => WritableAtom<unknown, [], void>;
 };
 
 export type ListDef<T extends { id: string }, From, To> = {
   from: (from: From) => Atom<T[]>;
-  to: (to: To) => WritableAtom<null, [(prev: T[]) => T[]], void>;
+  to: (to: To) => WritableAtom<unknown, [(prev: T[]) => T[]], void>;
 };
 
 export type RowDef<T extends { id: string }, From, To, Args> = {
@@ -189,8 +189,8 @@ function Row<T extends { id: string }, From, To, Args>({
 }
 
 type ControllerProps<To> = {
-  add: (to: To) => WritableAtom<null, [], void>;
-  remove: (to: To) => WritableAtom<null, [], void>;
+  add: (to: To) => WritableAtom<unknown, [], void>;
+  remove: (to: To) => WritableAtom<unknown, [], void>;
   abbreviate?: {
     value: boolean;
     setter: Setter<boolean>;

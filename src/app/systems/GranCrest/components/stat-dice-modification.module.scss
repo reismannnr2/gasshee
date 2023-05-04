@@ -1,0 +1,19 @@
+.layout {
+  font-size: 0.75rem;
+
+  & :global(.content-list),
+  & :global(.head-list) {
+    display: grid;
+    grid-template-columns: 8rem 3rem 3rem 5rem 1fr;
+  }
+
+  & [data-title='備考'] {
+    text-align: left;
+  }
+}
+
+.readonly-cell {
+  display: inline-block;
+  width: 100%;
+  text-align: center;
+}

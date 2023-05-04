@@ -1,6 +1,7 @@
 import { WritableAtom, atom, useAtomValue, useSetAtom } from 'jotai';
 import { doWithTransition } from '../../common/functions/react-util';
 import { DataForList } from '../../common/schema';
+import { SYSTEM_NAMES } from '../../common/text-map';
 import { endpointAtom } from '../storage/states';
 export const ORDER_BY_ITEMS = [
   { id: 'name-asc', field: 'name', direction: 'asc' },
@@ -89,7 +90,7 @@ const filteredUnitsAtom = atom(async (get) => {
     if (tag && !unit.tags.includes(tag)) {
       return false;
     }
-    if (system && !unit.system.includes(system)) {
+    if (system && !unit.system.includes(system) && !SYSTEM_NAMES['unit.system']?.includes(system)) {
       return false;
     }
     for (const freeSearchItem of freeSearch) {

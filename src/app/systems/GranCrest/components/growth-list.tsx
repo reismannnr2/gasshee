@@ -72,7 +72,7 @@ const detailsDef: RowDef<GcrGrowthItem, From, To, Args> = {
             title: '備考',
             from: (from, args) => from.growthDescriptionFamily(args),
             to: (to, args) => to.updateGrowthDescriptionFamily(args),
-            textareaProps: { rows: 2 },
+            textareaProps: { rows: 2, placeholder: '備考...' },
           };
         }),
     },

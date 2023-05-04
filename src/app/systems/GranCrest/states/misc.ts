@@ -87,3 +87,4 @@ export const growthSumAtom = atom((get) => {
   }
   return sums;
 });
+export const growthSumAtomFamily = atomFamily((statName: StatName) => atom((get) => get(growthSumAtom)[statName]));

@@ -8,6 +8,7 @@ type InputDefImpl<From, To, Args> =
   | PlaceholderDef
   | ReadonlyDef<From, Args>
   | TextInputDef<From, To, Args>
+  | NumberInputDef<From, To, Args>
   | TextAreaInputDef<From, To, Args>
   | CustomInputDef<From, To, Args>;
 
@@ -39,6 +40,8 @@ const UserInput = genericMemo(function UserInput<From, To, Args>({ def, from, to
       return <ReadonlyInput args={args} def={actualDef} from={from} />;
     case 'text':
       return <TextInput args={args} def={actualDef} from={from} to={to} />;
+    case 'number':
+      return <NumberInput args={args} def={actualDef} from={from} to={to} />;
     case 'textarea':
       return <TextAreaInput args={args} def={actualDef} from={from} to={to} />;
     case 'custom':
@@ -48,13 +51,13 @@ const UserInput = genericMemo(function UserInput<From, To, Args>({ def, from, to
 
 export default UserInput;
 
-type PlaceholderDef = {
+export type PlaceholderDef = {
   type: 'placeholder';
   title: string;
   spanProps?: Partial<JSX.IntrinsicElements['span']>;
 };
 
-type PlaceholderProps = {
+export type PlaceholderProps = {
   def: PlaceholderDef;
 };
 
@@ -62,10 +65,10 @@ function Placeholder({ def }: PlaceholderProps) {
   return <span data-title={def.title} {...def.spanProps} />;
 }
 
-type ReadonlyDef<From, Args> = {
+export type ReadonlyDef<From, Args> = {
   type: 'readonly';
   title: string;
-  from: (source: From, args: Args) => Atom<string>;
+  from: (source: From, args: Args) => Atom<unknown>;
   spanProps?: Partial<JSX.IntrinsicElements['span']>;
 };
 
@@ -77,7 +80,7 @@ type ReadonlyProps<From, Args> = {
 
 function ReadonlyInput<From, Args>({ def, from, args }: ReadonlyProps<From, Args>) {
   const valueAtom = useMemo(() => def.from(from, args), [def, from, args]);
-  const value = useAtomValue(valueAtom);
+  const value = String(useAtomValue(valueAtom) || '');
   return (
     <span className={styles['read-only']} data-title={def.title} {...def.spanProps}>
       {value}
@@ -85,11 +88,11 @@ function ReadonlyInput<From, Args>({ def, from, args }: ReadonlyProps<From, Args
   );
 }
 
-type TextInputDef<From, To, Args> = {
+export type TextInputDef<From, To, Args> = {
   type: 'text';
   title: string;
   from: (from: From, args: Args) => Atom<string>;
-  to: (to: To, args: Args) => WritableAtom<null, [string], void>;
+  to: (to: To, args: Args) => WritableAtom<unknown, [string], void>;
   inputProps?: Partial<JSX.IntrinsicElements['input']>;
 };
 
@@ -125,11 +128,51 @@ function TextInput<From, To, Args>({ def, from, to, args }: TextInputProps<From,
   );
 }
 
-type TextAreaInputDef<From, To, Args> = {
+export type NumberInputDef<From, To, Args> = {
+  type: 'number';
+  title: string;
+  from: (from: From, args: Args) => Atom<number>;
+  to: (to: To, args: Args) => WritableAtom<unknown, [number], void>;
+  inputProps?: Partial<JSX.IntrinsicElements['input']>;
+};
+
+type NumberInputProps<From, To, Args> = {
+  def: NumberInputDef<From, To, Args>;
+  from: From;
+  to: To;
+  args: Args;
+};
+
+function NumberInput<From, To, Args>({ def, from, to, args }: NumberInputProps<From, To, Args>) {
+  const valueAtom = useMemo(() => def.from(from, args), [def, from, args]);
+  const value = useAtomValue(valueAtom);
+  const writeAtom = useMemo(() => def.to(to, args), [def, to, args]);
+  const setter = useSetAtom(writeAtom);
+  const ref = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (ref.current && Number(ref.current.value) !== value) {
+      ref.current.value = String(value || '');
+    }
+  }, [value]);
+  return (
+    <input
+      ref={ref}
+      className={styles.input}
+      data-title={def.title}
+      defaultValue={value || ''}
+      onChange={debounced((e: ChangeEvent<HTMLInputElement>) => {
+        setter(Number(e.target.value));
+      })}
+      {...def.inputProps}
+    />
+  );
+}
+
+export type TextAreaInputDef<From, To, Args> = {
   type: 'textarea';
   title: string;
   from: (from: From, args: Args) => Atom<string>;
-  to: (to: To, args: Args) => WritableAtom<null, [string], void>;
+  to: (to: To, args: Args) => WritableAtom<unknown, [string], void>;
   textareaProps?: Partial<JSX.IntrinsicElements['textarea']>;
 };
 
@@ -165,7 +208,7 @@ function TextAreaInput<From, To, Args>({ def, from, to, args }: TextAreaInputPro
   );
 }
 
-type CustomInputDef<From, To, Args> = {
+export type CustomInputDef<From, To, Args> = {
   type: 'custom';
   title: string;
   render: (from: From, to: To, args: Args) => React.ReactNode;

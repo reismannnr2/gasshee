@@ -1,0 +1,20 @@
+.layout {
+  width: 45%;
+  margin-bottom: 2rem;
+  font-size: 0.75rem;
+  table-layout: fixed;
+
+  thead th:first-child {
+    width: 6rem;
+  }
+
+  thead th:last-child {
+    width: 14rem;
+  }
+
+  tbody tr:nth-child(4),
+  tbody tr:nth-child(5),
+  tbody tr:nth-child(7) {
+    border-bottom: 3px double #666;
+  }
+}

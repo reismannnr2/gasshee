@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import { Atom, useAtomValue } from 'jotai';
+import { useMemo } from 'react';
 import Maybe from '../../common/components/maybe';
 import MaybeWith from '../../common/components/maybe-with';
 import UserInput, { InputDef } from '../user-input/user-input';
@@ -8,7 +9,7 @@ import styles from './plain-table.module.scss';
 export type Props<From, To, Args> = {
   layout?: string;
   title: string;
-  titles?: string[];
+  titles?: readonly string[];
   rowDefs: readonly RowDef<From, To, Args>[];
   from: From;
   to: To;
@@ -17,6 +18,7 @@ export type Props<From, To, Args> = {
 export type RowDef<From, To, Args> = {
   id?: string;
   title: string;
+  showRowtitle?: boolean;
   showCellTitles?: boolean;
   cellDefs: readonly CellDef<From, To, Args>[];
 };
@@ -78,6 +80,11 @@ function Row<From, To, Args>({ def, from, to }: RowProps<From, To, Args>) {
         </tr>
       </Maybe>
       <tr data-content-row>
+        {
+          <Maybe test={def.showRowtitle}>
+            <th>{def.title}</th>
+          </Maybe>
+        }
         {def.cellDefs.map((cellDef) => (
           <Cell key={cellDef.id || cellDef.title} def={cellDef} from={from} to={to} />
         ))}
@@ -93,7 +100,8 @@ type CellProps<From, To, Args> = {
 };
 
 function Cell<From, To, Args>({ def, from, to }: CellProps<From, To, Args>) {
-  const args = useAtomValue(def.args(from));
+  const argsAtom = useMemo(() => def.args(from), [def, from]);
+  const args = useAtomValue(argsAtom);
   return (
     <td>
       <div>
