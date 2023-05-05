@@ -4,7 +4,7 @@ import styles from './toggle-box.module.scss';
 
 export type Props<Values extends string[]> = {
   valueAtom: Atom<Values[number]>;
-  setterAtom: WritableAtom<Values[number], [Values[number]], void>;
+  setterAtom: WritableAtom<unknown, [Values[number]], void>;
   values: Readonly<Values>;
   labels?: {
     [key in Values[number]]: string;

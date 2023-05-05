@@ -1,4 +1,5 @@
 import { Atom, WritableAtom, atom } from 'jotai';
+import Chapter from '../../../common/components/chapter';
 import PlainTable, { RowDef } from '../../../features/plain-table/plain-table';
 import { NumberInputDef, ReadonlyDef } from '../../../features/user-input/user-input';
 import { growthSumAtomFamily } from '../states/misc';
@@ -28,7 +29,11 @@ import {
 } from '../states/stats';
 import styles from './stat-table.module.scss';
 export default function StatTable() {
-  return <PlainTable from={from} layout={layout} rowDefs={rowDefs} title={title} titles={titles} to={to} />;
+  return (
+    <Chapter title="メインステータス">
+      <PlainTable from={from} layout={layout} rowDefs={rowDefs} title={title} titles={titles} to={to} />
+    </Chapter>
+  );
 }
 
 const layout = styles.layout;

@@ -1,5 +1,6 @@
 import { atom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
+import Chapter from '../../../common/components/chapter';
 import SortableList, { ListDef, RowDef } from '../../../features/sortable/sortable-list';
 import { InputDef } from '../../../features/user-input/user-input';
 import {
@@ -26,7 +27,9 @@ import styles from './skill-dice-modification.module.scss';
 
 export default function SkillDiceModification() {
   return (
-    <SortableList add={add} from={from} layout={layout} listDef={listDef} remove={remove} rowDef={rowDef} to={to} />
+    <Chapter title="判定修正(技能)" tooltip="対象の技能を使用する判定を修正します">
+      <SortableList add={add} from={from} layout={layout} listDef={listDef} remove={remove} rowDef={rowDef} to={to} />
+    </Chapter>
   );
 }
 const layout = styles.layout;

@@ -1,6 +1,7 @@
 import { atom, useSetAtom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
 import { nanoid } from 'nanoid';
+import Chapter from '../../../common/components/chapter';
 import { rangeArray } from '../../../common/functions/generate-fns';
 import { customFlags } from '../../../common/functions/react-util';
 import { InputDef } from '../../../features/user-input/user-input';
@@ -19,7 +20,11 @@ import { STAT_NAMES } from '../states/stats';
 import styles from './skill-table.module.scss';
 
 export default function SkillTable() {
-  return <VerticalTable<GcrSkillItem, From, To, string> {...tableProps} />;
+  return (
+    <Chapter title="技能">
+      <VerticalTable<GcrSkillItem, From, To, string> {...tableProps} />
+    </Chapter>
+  );
 }
 
 function SkillLevel({ skill: item, to }: { skill: GcrSkillItem; to: To }) {

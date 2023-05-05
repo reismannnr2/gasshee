@@ -13,6 +13,7 @@ import {
   updateGrowthFamily,
 } from '../states/misc';
 
+import Chapter from '../../../common/components/chapter';
 import { rangeArray } from '../../../common/functions/generate-fns';
 import { customFlags } from '../../../common/functions/react-util';
 import { InputDef } from '../../../features/user-input/user-input';
@@ -21,16 +22,19 @@ import styles from './growth-list.module.scss';
 
 export default function GrowthList() {
   return (
-    <SortableList
-      add={add}
-      detailsDef={detailsDef}
-      from={from}
-      layout={layout}
-      listDef={listDef}
-      remove={remove}
-      rowDef={rowDef}
-      to={to}
-    />
+    <Chapter title="成長履歴">
+      <SortableList
+        abbreviatedOnStart
+        add={add}
+        detailsDef={detailsDef}
+        from={from}
+        layout={layout}
+        listDef={listDef}
+        remove={remove}
+        rowDef={rowDef}
+        to={to}
+      />
+    </Chapter>
   );
 }
 

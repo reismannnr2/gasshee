@@ -10,6 +10,7 @@ type InputDefImpl<From, To, Args> =
   | TextInputDef<From, To, Args>
   | NumberInputDef<From, To, Args>
   | TextAreaInputDef<From, To, Args>
+  | CheckboxInputDef<From, To, Args>
   | CustomInputDef<From, To, Args>;
 
 type InputDefGenerate<From, To, Args> = {
@@ -44,6 +45,8 @@ const UserInput = genericMemo(function UserInput<From, To, Args>({ def, from, to
       return <NumberInput args={args} def={actualDef} from={from} to={to} />;
     case 'textarea':
       return <TextAreaInput args={args} def={actualDef} from={from} to={to} />;
+    case 'checkbox':
+      return <CheckboxInput args={args} def={actualDef} from={from} to={to} />;
     case 'custom':
       return <CustomInput args={args} def={actualDef} from={from} to={to} />;
   }
@@ -205,6 +208,42 @@ function TextAreaInput<From, To, Args>({ def, from, to, args }: TextAreaInputPro
       })}
       {...def.textareaProps}
     />
+  );
+}
+
+export type CheckboxInputDef<From, To, Args> = {
+  type: 'checkbox';
+  title: string;
+  from: (from: From, args: Args) => Atom<boolean>;
+  to: (to: To, args: Args) => WritableAtom<unknown, [(prev: boolean) => boolean], void>;
+  inputProps?: Partial<JSX.IntrinsicElements['input']>;
+};
+
+type CheckboxInputProps<From, To, Args> = {
+  def: CheckboxInputDef<From, To, Args>;
+  from: From;
+  to: To;
+  args: Args;
+};
+
+function CheckboxInput<From, To, Args>({ def, from, to, args }: CheckboxInputProps<From, To, Args>) {
+  const valueAtom = useMemo(() => def.from(from, args), [def, from, args]);
+  const value = useAtomValue(valueAtom);
+  const writeAtom = useMemo(() => def.to(to, args), [def, to, args]);
+  const setter = useSetAtom(writeAtom);
+
+  return (
+    <label className={styles['checkbox-label']}>
+      <span>{value ? '●' : ' '}</span>
+      <input
+        checked={value}
+        className={styles.input}
+        data-title={def.title}
+        type="checkbox"
+        onClick={() => setter((prev) => !prev)}
+        {...def.inputProps}
+      />
+    </label>
   );
 }
 

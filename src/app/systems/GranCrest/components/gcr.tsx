@@ -1,7 +1,11 @@
 'use client';
 import Maybe from '../../../common/components/maybe';
 import NoSSR from '../../../common/components/no-ssr';
+import AbilityList from './ability-list';
+import ArmieTable from './armie-table';
+import ArmorList from './armor-list';
 import BaseInfo from './base-info';
+import ExtraText from './extra-text';
 import styles from './gcr.module.scss';
 import GrowthList from './growth-list';
 import SkillDiceModification from './skill-dice-modification';
@@ -19,7 +23,11 @@ export default function Gcr() {
           <SkillTable />
           <StatDiceModification />
           <SkillDiceModification />
+          <AbilityList />
+          <ArmieTable />
+          <ArmorList />
           <GrowthList />
+          <ExtraText />
         </Maybe>
       </main>
     </NoSSR>

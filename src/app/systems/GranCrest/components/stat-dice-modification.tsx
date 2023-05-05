@@ -14,20 +14,24 @@ import {
 } from '../states/skill-set';
 import { StatName, statSumAtomFamily } from '../states/stats';
 
+import Chapter from '../../../common/components/chapter';
 import styles from './stat-dice-modification.module.scss';
 
 export default function StatDiceModification() {
   return (
-    <SortableList
-      add={add}
-      disableSort={true}
-      from={from}
-      layout={layout}
-      listDef={listDef}
-      remove={remove}
-      rowDef={rowDef}
-      to={to}
-    />
+    <Chapter title="判定修正(能力値)" tooltip="対象の能力値を使用する全ての判定を修正します">
+      <SortableList
+        add={add}
+        disableAdd={true}
+        disableSort={true}
+        from={from}
+        layout={layout}
+        listDef={listDef}
+        remove={remove}
+        rowDef={rowDef}
+        to={to}
+      />
+    </Chapter>
   );
 }
 const layout = styles.layout;

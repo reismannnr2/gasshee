@@ -32,6 +32,8 @@ export type Props<T extends { id: string }, From, To, Args> = {
   rowDef: RowDef<T, From, To, Args>;
   detailsDef?: RowDef<T, From, To, Args>;
   disableSort?: boolean;
+  disableAdd?: boolean;
+  abbreviatedOnStart?: boolean;
   from: From;
   to: To;
   add: (to: To) => WritableAtom<unknown, [], void>;
@@ -54,12 +56,14 @@ export default function SortableList<T extends { id: string }, From, To, Args>({
   rowDef,
   detailsDef,
   disableSort,
+  disableAdd,
+  abbreviatedOnStart,
   from,
   to,
   add,
   remove,
 }: Props<T, From, To, Args>) {
-  const [abbreviated, setAbbreviated] = useState(false);
+  const [abbreviated, setAbbreviated] = useState(Boolean(abbreviatedOnStart));
   const abbreviate = maybe(detailsDef, {
     value: abbreviated,
     setter: setAbbreviated,
@@ -89,7 +93,7 @@ export default function SortableList<T extends { id: string }, From, To, Args>({
     <DndContext collisionDetection={closestCenter} sensors={sensors} onDragEnd={onDragEnd}>
       <SortableContext items={items} strategy={verticalListSortingStrategy}>
         <div className={clsx(styles['sortable-list'], layout)}>
-          <Controller abbreviate={abbreviate} add={add} remove={remove} to={to} />
+          <Controller abbreviate={abbreviate} add={add} disableAdd={disableAdd} remove={remove} to={to} />
           <div ref={outerRef} className={clsx(styles.table, animate)}>
             <div ref={innerRef}>
               <HeadRow titles={rowDef.inputDefs.map((def) => def.title)} />
@@ -196,28 +200,37 @@ type ControllerProps<To> = {
     setter: Setter<boolean>;
   };
   to: To;
+  disableAdd?: boolean;
 };
 
-function Controller<To>({ add, remove, abbreviate, to }: ControllerProps<To>) {
+function Controller<To>({ add, remove, abbreviate, to, disableAdd }: ControllerProps<To>) {
   const addItem = useSetAtom(add(to));
   const removeItem = useSetAtom(remove(to));
   return (
-    <menu className={styles.controller}>
-      <li>
-        <button className={styles['controller-button']} type="button" onClick={addItem}>
-          +
-        </button>
-      </li>
-      <li>
-        <button className={styles['controller-button']} type="button" onClick={removeItem}>
-          -
-        </button>
-      </li>
+    <menu className={styles.controller} {...customFlags({ 'disable-add': disableAdd })}>
+      {
+        <Maybe test={!disableAdd}>
+          <li>
+            <button className={styles['controller-button']} type="button" onClick={addItem}>
+              +
+            </button>
+          </li>
+          <li>
+            <button className={styles['controller-button']} type="button" onClick={removeItem}>
+              -
+            </button>
+          </li>
+        </Maybe>
+      }
       {
         <MaybeWith test={abbreviate}>
           {(abbreviate) => (
             <li>
-              <button type="button" onClick={() => abbreviate.setter((prev) => !prev)}>
+              <button
+                className={styles['controller-button']}
+                type="button"
+                onClick={() => abbreviate.setter((prev) => !prev)}
+              >
                 <span className={clsx({ [styles.hide]: !abbreviate.value })}>詳細を表示</span>
                 <span className={clsx({ [styles.hide]: abbreviate.value })}>省略する</span>
               </button>
