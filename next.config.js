@@ -6,6 +6,8 @@ const nextConfig = {
   },
   output: 'export',
   distDir: 'docs',
+  assetPrefix: '/gasshee',
+  basePath: '/gasshee',
 };
 
 module.exports = nextConfig;
