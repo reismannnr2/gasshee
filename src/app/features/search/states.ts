@@ -1,4 +1,5 @@
 import { WritableAtom, atom, useAtomValue, useSetAtom } from 'jotai';
+import { atomWithHash } from 'jotai-location';
 import { doWithTransition } from '../../common/functions/react-util';
 import { DataForList } from '../../common/schema';
 import { SYSTEM_NAMES } from '../../common/text-map';
@@ -17,7 +18,7 @@ const PAGE_SIZE = 5;
 
 type OrderByItem = (typeof ORDER_BY_ITEMS)[number];
 
-const orderByAtom = atom<OrderByItem>(ORDER_BY_ITEMS[7]);
+const orderByAtom = atomWithHash<OrderByItem>('order', ORDER_BY_ITEMS[7]);
 const setOrderByAtom = atom(null, (_get, set, id: string) => {
   const item = ORDER_BY_ITEMS.find((item) => item.id === id);
   if (item) {
@@ -44,7 +45,7 @@ function withPageAndTransition<T>(base: WritableAtom<T, [T], void>) {
   );
 }
 
-export const rawParoleAtom = atom('');
+export const rawParoleAtom = atomWithHash('parole', '');
 export const debouncedParoleAtom = withPageAndTransition<string>(atom(''));
 export const setParoleDebouncedAtom = (() => {
   let timeoutId: number | null = null;
@@ -58,9 +59,9 @@ export const setParoleDebouncedAtom = (() => {
     }, 500);
   });
 })();
-export const tagAtom = withPageAndTransition<string>(atom(''));
-export const systemAtom = withPageAndTransition<string>(atom(''));
-export const freeTextAtom = withPageAndTransition<string>(atom(''));
+export const tagAtom = withPageAndTransition<string>(atomWithHash('tag', ''));
+export const systemAtom = withPageAndTransition<string>(atomWithHash('system', ''));
+export const freeTextAtom = withPageAndTransition<string>(atomWithHash('free', ''));
 
 const freeSearchAtom = atom((get) => {
   const freeText = get(freeTextAtom);
@@ -84,7 +85,6 @@ const filteredUnitsAtom = atom(async (get) => {
   const system = get(systemAtom);
   const freeSearch = get(freeSearchAtom);
   const orderBy = get(orderByAtom);
-  console.log('called', tag, system, freeSearch, orderBy);
   const units = await get(unitsAtom);
   const items = units.filter((unit) => {
     if (tag && !unit.tags.includes(tag)) {
