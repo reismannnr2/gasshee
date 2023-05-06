@@ -18,7 +18,7 @@ export default function PageBase({ children }: Props) {
 function Header() {
   return (
     <header className={styles.header}>
-      <a href="/">
+      <a href="/gasshee">
         <span className={styles.title}>gasshee</span>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
