@@ -21,7 +21,7 @@ function Header() {
     <header className={styles.header}>
       <Link href="/">
         <span className={styles.title}>gasshee</span>
-        <Image alt="Site Icon" className={styles.icon} height={32} src="/gasshee/favicon.ico" width={32} />
+        <Image alt="Site Icon" className={styles.icon} height={32} src="/favicon.ico" width={32} />
       </Link>
       <ul className={styles['system-list']}>
         <li>
