@@ -1,0 +1,18 @@
+.layout {
+  font-size: 0.75rem;
+
+  & :global(.content-list),
+  & :global(.head-list) {
+    display: grid;
+    grid-template-columns: 14rem 14rem 1fr;
+  }
+
+  & [data-title='種別'] {
+    cursor: default;
+  }
+
+  & [data-title='備考'] {
+    text-align: left;
+    resize: none;
+  }
+}

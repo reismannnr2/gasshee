@@ -240,7 +240,7 @@ function CheckboxInput<From, To, Args>({ def, from, to, args }: CheckboxInputPro
         className={styles.input}
         data-title={def.title}
         type="checkbox"
-        onClick={() => setter((prev) => !prev)}
+        onChange={(e) => setter(() => e.target.checked)}
         {...def.inputProps}
       />
     </label>

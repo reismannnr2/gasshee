@@ -1,0 +1,56 @@
+.hpmp-layout {
+  width: 75%;
+  margin-bottom: 1rem;
+  font-size: 0.75rem;
+  table-layout: fixed;
+
+  & thead tr th:first-child {
+    width: 8rem;
+  }
+
+  & thead tr th:nth-child(2),
+  & thead tr th:nth-child(3) {
+    width: 3rem;
+  }
+
+  & tbody tr:nth-child(3),
+  & tbody tr:nth-child(4),
+  & tbody tr:nth-child(6) {
+    border-bottom: 3px double #666;
+  }
+}
+
+.extra-layout {
+  width: 75%;
+  font-size: 0.75rem;
+  table-layout: fixed;
+
+  & thead tr th:first-child {
+    width: 8rem;
+  }
+
+  & thead tr th:nth-child(2),
+  & thead tr th:nth-child(3),
+  & thead tr th:nth-child(4),
+  & thead tr th:nth-child(5) {
+    width: 4.5rem;
+  }
+
+  & tbody tr:nth-child(3),
+  & tbody tr:nth-child(4),
+  & tbody tr:nth-child(6) {
+    border-bottom: 3px double #666;
+  }
+}
+
+.placeholder {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: #ddd;
+
+  &::after {
+    content: '/';
+    opacity: 0;
+  }
+}
