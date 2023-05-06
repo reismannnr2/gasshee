@@ -8,10 +8,12 @@ import BaseInfo from './base-info';
 import ExtraText from './extra-text';
 import styles from './gcr.module.scss';
 import GrowthList from './growth-list';
+import LifepathList from './lifepath-list';
 import SkillDiceModification from './skill-dice-modification';
 import SkillTable from './skill-table';
 import StatDiceModification from './stat-dice-modification';
 import StatTable from './stat-table';
+import SubStatTable from './substat-table';
 
 export default function Gcr() {
   return (
@@ -20,6 +22,7 @@ export default function Gcr() {
         <Maybe test={true}>
           <BaseInfo />
           <StatTable />
+          <SubStatTable />
           <SkillTable />
           <StatDiceModification />
           <SkillDiceModification />
@@ -27,6 +30,7 @@ export default function Gcr() {
           <ArmieTable />
           <ArmorList />
           <GrowthList />
+          <LifepathList />
           <ExtraText />
         </Maybe>
       </main>

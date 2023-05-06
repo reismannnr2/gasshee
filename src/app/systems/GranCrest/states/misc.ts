@@ -91,3 +91,64 @@ export const growthSumAtomFamily = atomFamily((statName: StatName) => atom((get)
 
 export const extraTextAtom = atom('');
 export const isExtraTextHTMLAtom = atom(true);
+
+export type LifePath = {
+  id: string;
+  種別: string;
+  内容: string;
+  詳細: string;
+  備考: string;
+};
+export const initializeLifePath = (): LifePath => ({
+  id: nanoid(),
+  種別: '',
+  内容: '',
+  詳細: '',
+  備考: '',
+});
+
+export const gcrLifePathAtom = atom<LifePath[]>([
+  {
+    id: '出自',
+    種別: '出自',
+    内容: '',
+    詳細: '',
+    備考: '',
+  },
+  {
+    id: '経験1',
+    種別: '経験1',
+    内容: '',
+    詳細: '',
+    備考: '',
+  },
+  {
+    id: '経験2',
+    種別: '経験2',
+    内容: '',
+    詳細: '',
+    備考: '',
+  },
+  {
+    id: '目的',
+    種別: '目的',
+    内容: '',
+    詳細: '',
+    備考: '',
+  },
+  {
+    id: '禁忌',
+    種別: '禁忌',
+    内容: '',
+    詳細: '',
+    備考: '',
+  },
+  {
+    id: '趣味嗜好',
+    種別: '趣味嗜好',
+    内容: '',
+    詳細: '',
+    備考: '',
+  },
+]);
+export const LIFEPATH_KEYS = ['種別', '内容', '詳細'] as const;

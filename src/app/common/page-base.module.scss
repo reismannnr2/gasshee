@@ -12,11 +12,23 @@
 }
 
 .header {
-  padding: 0.125rem 0.5rem;
+  position: relative;
+  display: flex;
+  padding: 0.125rem 2rem;
   font-family: monospace;
   font-size: 0.75rem;
   line-height: 1;
   border-bottom: 1px dotted #666;
+
+  a {
+    color: black;
+    text-decoration: none;
+  }
+}
+
+.icon {
+  position: absolute;
+  left: 0;
 }
 
 .title {
@@ -29,4 +41,10 @@
   font-size: 0.75rem;
   line-height: 1;
   text-align: right;
+}
+
+.system-list {
+  display: flex;
+  margin-left: 2rem;
+  list-style-type: none;
 }

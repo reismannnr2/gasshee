@@ -1,4 +1,4 @@
-import { Atom, WritableAtom, useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { Atom, WritableAtom, useAtomValue, useSetAtom } from 'jotai';
 import { ChangeEvent } from 'react';
 import styles from './filters.module.scss';
 import {
@@ -108,7 +108,7 @@ function InputField({
   list?: string;
   label: string;
 }) {
-  const value = useAtom(valueAtom);
+  const value = useAtomValue(valueAtom);
   const setValue = useSetAtom(setterAtom);
   const onChange = async (e: ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
