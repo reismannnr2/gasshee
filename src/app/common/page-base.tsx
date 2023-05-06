@@ -18,7 +18,7 @@ export default function PageBase({ children }: Props) {
 function Header() {
   return (
     <header className={styles.header}>
-      <Link href="/gasshee">
+      <a href="/">
         <span className={styles.title}>gasshee</span>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -29,7 +29,7 @@ function Header() {
           src="/gasshee/favicon.ico"
           width={32}
         />
-      </Link>
+      </a>
       <ul className={styles['system-list']}>
         <li>
           <Link href="/systems/GranCrest">GranCrest</Link>
