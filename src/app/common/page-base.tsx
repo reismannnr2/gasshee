@@ -19,7 +19,7 @@ export default function PageBase({ children }: Props) {
 function Header() {
   return (
     <header className={styles.header}>
-      <Link href="/">
+      <Link href="/gasshee">
         <span className={styles.title}>gasshee</span>
         <Image alt="Site Icon" className={styles.icon} height={32} src="/gasshee/favicon.ico" width={32} />
       </Link>
