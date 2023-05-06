@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
 import styles from './page-base.module.scss';
@@ -21,7 +20,15 @@ function Header() {
     <header className={styles.header}>
       <Link href="/">
         <span className={styles.title}>gasshee</span>
-        <Image alt="Site Icon" className={styles.icon} height={32} src="/favicon.ico" width={32} />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          alt="Site Icon"
+          className={styles.icon}
+          decoding="async"
+          height={32}
+          src="/gasshee/favicon.ico"
+          width={32}
+        />
       </Link>
       <ul className={styles['system-list']}>
         <li>
