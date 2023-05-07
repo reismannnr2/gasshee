@@ -1,6 +1,5 @@
 import { Atom, useAtomValue, useSetAtom, WritableAtom } from 'jotai';
 import React, { ChangeEvent, useEffect, useMemo, useRef } from 'react';
-import { debounced } from '../../common/functions/generate-fns';
 import { genericMemo } from '../../common/functions/react-util';
 import styles from './user-input.module.scss';
 
@@ -123,9 +122,9 @@ function TextInput<From, To, Args>({ def, from, to, args }: TextInputProps<From,
       className={styles.input}
       data-title={def.title}
       defaultValue={value}
-      onChange={debounced((e: ChangeEvent<HTMLInputElement>) => {
+      onChange={(e: ChangeEvent<HTMLInputElement>) => {
         setter(e.target.value);
-      })}
+      }}
       {...def.inputProps}
     />
   );
@@ -163,9 +162,9 @@ function NumberInput<From, To, Args>({ def, from, to, args }: NumberInputProps<F
       className={styles.input}
       data-title={def.title}
       defaultValue={value || ''}
-      onChange={debounced((e: ChangeEvent<HTMLInputElement>) => {
+      onChange={(e: ChangeEvent<HTMLInputElement>) => {
         setter(Number(e.target.value));
-      })}
+      }}
       {...def.inputProps}
     />
   );
@@ -203,9 +202,9 @@ function TextAreaInput<From, To, Args>({ def, from, to, args }: TextAreaInputPro
       className={styles.input}
       data-title={def.title}
       defaultValue={value}
-      onChange={debounced((e: ChangeEvent<HTMLTextAreaElement>) => {
+      onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
         setter(e.target.value);
-      })}
+      }}
       {...def.textareaProps}
     />
   );

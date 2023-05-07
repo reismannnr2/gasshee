@@ -162,8 +162,8 @@ export default function PlainSortableList<
                   return String(get(from.getterFamily(args))?.[key] ?? '');
                 }),
               to: (to, args) =>
-                atom(null, (_, set) => {
-                  set(to.setterFamily(args), (prev) => ({ ...prev, [key]: '' }));
+                atom(null, (_, set, value: string) => {
+                  set(to.setterFamily(args), (prev) => ({ ...prev, [key]: value }));
                 }),
               inputProps: inputProps?.[key],
             };

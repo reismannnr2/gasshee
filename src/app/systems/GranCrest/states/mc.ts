@@ -1,5 +1,6 @@
 import { atom } from 'jotai';
 import { nanoid } from 'nanoid';
+import { GcrAbility, initializeAbility } from './abilities';
 
 export type GcrArmie = {
   id: string;
@@ -76,46 +77,4 @@ export const GCR_ARIMIE_KEYS = [
 
 export const gcrArmieAtom = atom<GcrArmie[]>([initializeArmie()]);
 
-export type GcrArmieAbility = {
-  id: string;
-  部隊特技名: string;
-  LV: string;
-  種別: string;
-  タイミング: string;
-  判定: string;
-  目標値: string;
-  対象: string;
-  射程: string;
-  コスト: string;
-  制限: string;
-  備考: string;
-};
-
-export const initializeArmieAbility = (): GcrArmieAbility => ({
-  id: nanoid(),
-  部隊特技名: '',
-  LV: '',
-  種別: '',
-  タイミング: '',
-  判定: '',
-  目標値: '',
-  対象: '',
-  射程: '',
-  コスト: '',
-  制限: '',
-  備考: '',
-});
-
-export const gcrArmieAbilitiesAtom = atom<GcrArmieAbility[]>([initializeArmieAbility()]);
-export const GCR_ARMIE_ABILITY_KEYS = [
-  '部隊特技名',
-  'LV',
-  '種別',
-  'タイミング',
-  '判定',
-  '目標値',
-  '対象',
-  '射程',
-  'コスト',
-  '制限',
-] as const;
+export const gcrArmieAbilitiesAtom = atom<GcrAbility[]>([initializeAbility()]);

@@ -4,7 +4,7 @@
   & :global(.content-list),
   & :global(.head-list) {
     display: grid;
-    grid-template-columns: 14rem 2rem 8rem 8rem 5rem 4rem 5rem 5rem 5rem 3rem 6rem 1fr;
+    grid-template-columns: 12rem 2rem 8rem 8rem 5rem 5rem 4rem 5rem 5rem 5rem 2.5rem 6rem 1fr;
   }
 
   & [data-title='備考'] {
@@ -13,17 +13,16 @@
   }
 }
 
-.magic-layout {
+.ability-numbers {
+  width: 100%;
+  margin-bottom: 1rem;
   font-size: 0.75rem;
+  table-layout: fixed;
 
-  & :global(.content-list),
-  & :global(.head-list) {
-    display: grid;
-    grid-template-columns: 14rem 7rem 7rem 6rem 4rem 4rem 4rem 5rem 5rem 3rem 6rem 1fr;
-  }
-
-  & [data-title='備考'] {
-    text-align: left;
-    resize: none;
+  & thead tr th:first-child,
+  & thead tr th:nth-child(2),
+  & thead tr th:nth-child(3),
+  & thead tr th:nth-child(4) {
+    width: 8rem;
   }
 }

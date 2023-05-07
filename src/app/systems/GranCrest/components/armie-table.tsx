@@ -1,13 +1,7 @@
 import Chapter from '../../../common/components/chapter';
 import PlainSortableList from '../../../features/sortable/plain-sortable-list';
-import {
-  GCR_ARIMIE_KEYS,
-  GCR_ARMIE_ABILITY_KEYS,
-  gcrArmieAbilitiesAtom,
-  gcrArmieAtom,
-  initializeArmie,
-  initializeArmieAbility,
-} from '../states/mc';
+import { GCR_ABILITY_KEYS, initializeAbility } from '../states/abilities';
+import { GCR_ARIMIE_KEYS, gcrArmieAbilitiesAtom, gcrArmieAtom, initializeArmie } from '../states/mc';
 import styles from './armie-table.module.scss';
 
 export default function ArmieTable() {
@@ -28,10 +22,10 @@ export default function ArmieTable() {
       <Chapter title="部隊特技">
         <PlainSortableList
           abbreviatedOnStart
-          initialize={initializeArmieAbility}
+          initialize={initializeAbility}
           itemsAtom={gcrArmieAbilitiesAtom}
-          keys={GCR_ARMIE_ABILITY_KEYS}
-          layout={styles['abilities-layout']}
+          keys={GCR_ABILITY_KEYS}
+          layout={styles['ability-layout']}
         />
       </Chapter>
     </>
